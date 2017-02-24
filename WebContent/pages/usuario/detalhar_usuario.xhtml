@@ -8,27 +8,11 @@
 
 	<ui:composition template="/templates/template.xhtml">
 		<ui:define name="conteudo">
+			<f:metadata>
+				<f:viewParam name="nomeUsuario" value="#{usuariosMBean.usuarioSelecionado}"/>
+			</f:metadata>
 			<h:form>
-				<p:dataTable var="usuario" value="#{usuariosMBean.usuarios}" style="margin-bottom:40px">
-			        <p:column headerText="Nome" sortBy="#{usuario.nome}">
-			            <h:outputText value="#{usuario.nome}" />
-			        </p:column>
-			 
-			        <p:column headerText="E-mail" sortBy="#{usuario.email}">
-			            <h:outputText value="#{usuario.email}" />
-			        </p:column>
-			 
-			        <p:column headerText="Usuário" sortBy="#{usuario.login.usuario}">
-			            <h:outputText value="#{usuario.login.usuario}" />
-			        </p:column>
-			 
-			        <p:column style="width:115px;text-align: center">
-			            <p:commandButton value="Detalhes"/>
-			        </p:column>
-			        <f:facet name="footer">
-			        	<p:commandButton value="Adicionar usuário"/>
-			        </f:facet>
-			    </p:dataTable>
+				
 			</h:form>
 		</ui:define>
 	</ui:composition>

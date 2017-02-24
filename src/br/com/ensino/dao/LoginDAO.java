@@ -80,17 +80,19 @@ public class LoginDAO {
 			sessao.close();
 		}
 		
-		Administrador adm = user.getAdministrador();
-		if (adm != null)
-			return adm;
-		
-		Professor p = user.getProfessor();
-		if (p != null)
-			return p;
-		
-		Aluno al = user.getAluno();
-		if (al != null)
-			return al;
+		if (user != null){
+			Administrador adm = user.getAdministrador();
+			if (adm != null)
+				return adm;
+			
+			Professor p = user.getProfessor();
+			if (p != null)
+				return p;
+			
+			Aluno al = user.getAluno();
+			if (al != null)
+				return al;
+		}
 		
 		return null;
 	}

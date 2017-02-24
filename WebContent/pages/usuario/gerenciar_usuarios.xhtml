@@ -8,8 +8,8 @@
 
 	<ui:composition template="/templates/template.xhtml">
 		<ui:define name="conteudo">
-			<h:form>
-				<p:dataTable var="usuario" value="#{usuariosMBean.usuarios}" style="margin-bottom:40px">
+			<h:form id = "form">
+				<p:dataTable var="usuario" value="#{usuariosMBean.usuarios}" style="margin-bottom:40px" id="dt">
 			        <p:column headerText="Nome" sortBy="#{usuario.nome}">
 			            <h:outputText value="#{usuario.nome}" />
 			        </p:column>
@@ -23,12 +23,56 @@
 			        </p:column>
 			 
 			        <p:column style="width:115px;text-align: center">
-			            <p:commandButton value="Detalhes"/>
+			            <p:button value="Detalhes" outcome="detalhar_usuario">
+			            	<f:param name="nomeUsuario" value="#{usuario.nome}" />
+			            </p:button>
+			        </p:column>
+			        
+			        <p:column style="width:115px;text-align: center">
+			            <p:commandButton value="Excluir" action="#{usuariosMBean.excluirUsuario()}" update="dt" >
+			            	<f:setPropertyActionListener value="usuario" target="#{usuariosMBean.usuarioSelecionado}" />
+			            </p:commandButton>
 			        </p:column>
 			        <f:facet name="footer">
-			        	<p:commandButton value="Adicionar usuário"/>
+			        	<p:commandButton value="Adicionar usuário" onclick="PF('adicionarUserDlg').show();"/>
 			        </f:facet>
 			    </p:dataTable>
+			    
+			    <p:dialog header="Adicionar usuário" resizable="false" widgetVar="adicionarUserDlg">
+					<h:panelGrid columns="2" cellpadding="5" id = "grid">
+						<h:outputLabel for="nome" value="Nome: " />
+            			<p:inputText id="nome" value="#{usuariosMBean.nome}" required="true" label="nome" />
+            			
+            			<h:outputLabel for="idade" value="Idade: " />
+            			<p:inputText id="idade" value="#{usuariosMBean.idade}" required="true" label="idade">
+            				<p:keyFilter regEx="/[\d]/"/>
+            			</p:inputText>
+            			
+            			<h:outputLabel for="email" value="E-mail: " />
+            			<p:inputText id="email" value="#{usuariosMBean.email}" required="true" label="email" />
+            			
+            			<h:outputLabel for="nomeDeUsuario" value="Nome de usuário: " />
+            			<p:inputText id="nomeDeUsuario" value="#{usuariosMBean.usuario}" required="true" label="nomeDeUsuario" />
+            			
+            			<h:outputLabel for="senha" value="Senha: " />
+            			<p:inputText id="senha" value="#{usuariosMBean.senha}" required="true" label="senha" />
+            			
+            			<p:outputLabel for="tipo" value="Tipo de usuário: " />
+				        <p:selectOneMenu id="tipo" value="#{usuariosMBean.tipo}" >
+				            <f:selectItem itemLabel="Aluno" itemValue="Al" />
+				            <f:selectItem itemLabel="Professor" itemValue="Pr" />
+				            <f:selectItem itemLabel="Administrador" itemValue="Adm" />
+				        </p:selectOneMenu>
+				        
+				        <p:outputLabel for="sexo" value="Sexo: " />
+				        <p:selectOneMenu id="sexo" value="#{usuariosMBean.sexo}" >
+				            <f:selectItem itemLabel="Masculino" itemValue="M" />
+				            <f:selectItem itemLabel="Feminino" itemValue="F" />
+				        </p:selectOneMenu>
+				        
+				        <p:commandButton action="#{usuariosMBean.salvarUsuario()}" value="Salvar" oncomplete="PF('adicionarUserDlg').hide();" update="grid @form" ajax="true"/>
+					</h:panelGrid>
+				</p:dialog>
 			</h:form>
 		</ui:define>
 	</ui:composition>

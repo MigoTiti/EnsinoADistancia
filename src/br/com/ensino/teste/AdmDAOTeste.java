@@ -13,7 +13,7 @@ public class AdmDAOTeste {
 	@Test
 	//@Ignore
 	public void testSalvar() {
-		Administrador a = new Administrador("titititiiiiiii", 19, "eu@eua", "eitaa", "123", "M");
+		Administrador a = new Administrador("titititiiiiiii", 19, "eu@eua", "eita", "123", "M");
 		
 		AdministradorDAO.salvar(a);
 	}
