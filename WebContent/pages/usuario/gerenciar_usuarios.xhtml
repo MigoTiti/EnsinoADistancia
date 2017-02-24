@@ -29,8 +29,8 @@
 			        </p:column>
 			        
 			        <p:column style="width:115px;text-align: center">
-			            <p:commandButton value="Excluir" action="#{usuariosMBean.excluirUsuario()}" update="dt" >
-			            	<f:setPropertyActionListener value="usuario" target="#{usuariosMBean.usuarioSelecionado}" />
+			            <p:commandButton value="Excluir" actionListener="#{usuariosMBean.excluirUsuario}" immediate="true" update="dt">
+			            	<f:attribute name="user" value="#{usuario}"/>
 			            </p:commandButton>
 			        </p:column>
 			        <f:facet name="footer">
@@ -70,7 +70,7 @@
 				            <f:selectItem itemLabel="Feminino" itemValue="F" />
 				        </p:selectOneMenu>
 				        
-				        <p:commandButton action="#{usuariosMBean.salvarUsuario()}" value="Salvar" oncomplete="PF('adicionarUserDlg').hide();" update="grid @form" ajax="true"/>
+				        <p:commandButton action="#{usuariosMBean.salvarUsuario()}" value="Salvar" oncomplete="PF('adicionarUserDlg').hide();" update="grid :form:dt" ajax="true"/>
 					</h:panelGrid>
 				</p:dialog>
 			</h:form>

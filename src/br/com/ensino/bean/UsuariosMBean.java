@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.event.ActionEvent;
 
 import br.com.ensino.dao.AdministradorDAO;
 import br.com.ensino.dao.AlunoDAO;
@@ -41,6 +42,8 @@ public class UsuariosMBean {
 			break;
 		}
 		
+		usuarios = popularLista();
+		
 		nome = null;
 		idade = null;
 		email = null;
@@ -49,22 +52,23 @@ public class UsuariosMBean {
 		tipo = null;
 	}
 	
-	public void excluirUsuario(){
+	public void excluirUsuario(ActionEvent e){
+		Object usuarioSelecionado = e.getComponent().getAttributes().get("user");
 		if (usuarioSelecionado instanceof Aluno){
 			AlunoDAO.deletar((Aluno) usuarioSelecionado);
-			popularLista();
+			usuarios = popularLista();
 			return;
 		}
 		
 		if (usuarioSelecionado instanceof Professor){
 			ProfessorDAO.deletar((Professor) usuarioSelecionado);
-			popularLista();
+			usuarios = popularLista();
 			return;
 		}
 		
 		if (usuarioSelecionado instanceof Administrador){
 			AdministradorDAO.deletar((Administrador) usuarioSelecionado);
-			popularLista();
+			usuarios = popularLista();
 			return;
 		}
 	}
