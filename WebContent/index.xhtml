@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html"
+	  xmlns:p="http://primefaces.org/ui"
+	  xmlns:f="http://java.sun.com/jsf/core">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Ensino à distância</title>
+</h:head>
+<h:body>
+	<h:form style="width: 400px; heigth: 200px; margin: 0 auto;">
+	    <p:panel header="Login no sistema" >
+	        <p:messages />
+	 
+	        <h:panelGrid columns="3" cellpadding="5" >
+	        
+	            <h:outputLabel for="login" value="Usuário: " />
+	            <p:inputText id="login" value="#{loginMBean.usuario}" label="usuario" required="true"/>
+	            <p:message for="login" />
+	 
+	            <h:outputLabel for="senha" value="Senha: " />
+	            <p:password id="senha" value="#{loginMBean.senha}" label="senha" required="true"/>
+	            <p:message for="senha" />
+	 
+	        </h:panelGrid>
+	 
+	        <p:commandButton value="Login" ajax="false" icon="ui-icon-check" validateClient="true" action="#{loginMBean.login}"/>
+	    </p:panel>
+	</h:form>
+</h:body>
+</html>

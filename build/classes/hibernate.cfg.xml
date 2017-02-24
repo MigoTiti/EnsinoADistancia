@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+                                         "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+ <session-factory>
+  
+  <property name="connection.driver_class">org.firebirdsql.jdbc.FBDriver</property>
+  <property name="connection.url">jdbc:firebirdsql://localhost/db_ensino</property>
+  <property name="connection.username">SYSDBA</property>
+  <property name="connection.password">masterkey</property>
+  
+  <property name="connection.pool_size">1</property>
+  
+  <property name="dialect">org.hibernate.dialect.FirebirdDialect</property>
+  
+  <property name="current_session_context_class">thread</property>
+  
+  <property name="cache.provider_class">org.hibernate.cache.internal.NoCacheProvider</property>
+  
+  <property name="show_sql">true</property>
+  
+  <property name="hbm2ddl.auto">update</property>
+  
+  <mapping class="br.com.ensino.entidade.Administrador" />
+  <mapping class="br.com.ensino.entidade.Aluno" />
+  <mapping class="br.com.ensino.entidade.Professor" />
+  <mapping class="br.com.ensino.entidade.Turma" />
+  <mapping class="br.com.ensino.entidade.Atividade" />
+  <mapping class="br.com.ensino.entidade.Enunciado" />
+  <mapping class="br.com.ensino.entidade.Resposta" />
+  <mapping class="br.com.ensino.entidade.VideoAula" />
+  <mapping class="br.com.ensino.entidade.MaterialComplementar" />
+  <mapping class="br.com.ensino.entidade.Forum" />
+  <mapping class="br.com.ensino.entidade.MensagemForum" />
+  <mapping class="br.com.ensino.entidade.Login" />
+
+ </session-factory>
+</hibernate-configuration>
