@@ -8,6 +8,7 @@
 
 	<ui:composition template="/templates/template.xhtml">
 		<ui:define name="conteudo">
+			
 			<h:form id = "form">
 				<p:dataTable var="usuario" value="#{usuariosMBean.usuarios}" style="margin-bottom:40px" id="dt">
 			        <p:column headerText="Nome" sortBy="#{usuario.nome}">
@@ -23,7 +24,7 @@
 			        </p:column>
 			 
 			        <p:column style="width:115px;text-align: center">
-			            <p:button value="Detalhes" outcome="detalhar_usuario">
+			            <p:button value="Detalhes" outcome="detalhar_usuario?faces-redirect-true">
 			            	<f:param name="nomeUsuario" value="#{usuario.login.usuario}" />
 			            </p:button>
 			        </p:column>
@@ -45,7 +46,7 @@
             			
             			<h:outputLabel for="idade" value="Idade: " />
             			<p:inputText id="idade" value="#{usuariosMBean.idade}" required="true" label="idade">
-            				<p:keyFilter regEx="/[\d]/"/>
+            				<p:keyFilter regEx="/[0-9_]/i" />
             			</p:inputText>
             			
             			<h:outputLabel for="email" value="E-mail: " />

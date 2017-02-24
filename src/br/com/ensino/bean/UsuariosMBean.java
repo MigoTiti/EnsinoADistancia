@@ -18,7 +18,7 @@ import br.com.ensino.entidade.Professor;
 @ViewScoped
 public class UsuariosMBean {
 
-	private List<Object> usuarios = popularLista();
+	private List<Object> usuarios;
 	private Object usuarioSelecionado;
 	
 	private String nome;
@@ -29,6 +29,13 @@ public class UsuariosMBean {
 	private String senha;
 	private String sexo;
 	private String tipo;
+	
+	public boolean notAdministrador(){
+		if (usuarioSelecionado instanceof Administrador)
+			return false;
+		
+		return true;
+	}
 	
 	public void salvarUsuario(){
 		switch (tipo) {
@@ -43,7 +50,7 @@ public class UsuariosMBean {
 			break;
 		}
 		
-		usuarios = popularLista();
+		popularLista();
 		
 		zerar();
 	}
@@ -57,10 +64,7 @@ public class UsuariosMBean {
 			((Aluno) usuarioSelecionado).setUsuario(usuario);
 			((Aluno) usuarioSelecionado).setSexo(sexo);
 			AlunoDAO.editar((Aluno) usuarioSelecionado);
-			return;
-		}
-		
-		if (usuarioSelecionado instanceof Professor){
+		} else if (usuarioSelecionado instanceof Professor){
 			((Professor) usuarioSelecionado).setNome(nome);
 			((Professor) usuarioSelecionado).setEmail(email);
 			((Professor) usuarioSelecionado).setIdade(idade);
@@ -68,10 +72,7 @@ public class UsuariosMBean {
 			((Professor) usuarioSelecionado).setUsuario(usuario);
 			((Professor) usuarioSelecionado).setSexo(sexo);
 			ProfessorDAO.editar((Professor) usuarioSelecionado);
-			return;
-		}
-		
-		if (usuarioSelecionado instanceof Administrador){
+		} else if (usuarioSelecionado instanceof Administrador){
 			((Administrador) usuarioSelecionado).setNome(nome);
 			((Administrador) usuarioSelecionado).setEmail(email);
 			((Administrador) usuarioSelecionado).setIdade(idade);
@@ -79,8 +80,10 @@ public class UsuariosMBean {
 			((Administrador) usuarioSelecionado).setUsuario(usuario);
 			((Administrador) usuarioSelecionado).setSexo(sexo);
 			AdministradorDAO.editar((Administrador) usuarioSelecionado);
-			return;
 		}
+		
+		popularLista();		
+		return;
 	}
 	
 	public void zerar(){
@@ -96,29 +99,27 @@ public class UsuariosMBean {
 		Object usuarioSelecionado = e.getComponent().getAttributes().get("user");
 		if (usuarioSelecionado instanceof Aluno){
 			AlunoDAO.deletar((Aluno) usuarioSelecionado);
-			usuarios = popularLista();
+			popularLista();
 			return;
 		}
 		
 		if (usuarioSelecionado instanceof Professor){
 			ProfessorDAO.deletar((Professor) usuarioSelecionado);
-			usuarios = popularLista();
+			popularLista();
 			return;
 		}
 		
 		if (usuarioSelecionado instanceof Administrador){
 			AdministradorDAO.deletar((Administrador) usuarioSelecionado);
-			usuarios = popularLista();
+			popularLista();
 			return;
 		}
 	}
 	
-	public List<Object> popularLista(){
-		List<Object> o = new ArrayList<>(AdministradorDAO.listar());
-		o.addAll(AlunoDAO.listar());
-		o.addAll(ProfessorDAO.listar());
-		
-		return o;
+	public void popularLista(){
+		usuarios = new ArrayList<>(AdministradorDAO.listar());
+		usuarios.addAll(AlunoDAO.listar());
+		usuarios.addAll(ProfessorDAO.listar());
 	}
 	
 	public String getTipo() {
@@ -150,6 +151,13 @@ public class UsuariosMBean {
 	}
 
 	public String getSexo() {
+		if(sexo != null){
+			if (sexo.equals("M"))
+				return "Masculino";
+			else
+				return "Feminino";
+		}
+		
 		return sexo;
 	}
 
@@ -178,6 +186,7 @@ public class UsuariosMBean {
 	}
 
 	public List<Object> getUsuarios() {
+		popularLista();	
 		return usuarios;
 	}
 

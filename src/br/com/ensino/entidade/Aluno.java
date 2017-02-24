@@ -66,6 +66,10 @@ public class Aluno{
 		this.sexo = sexo;
 	}
 	
+	public void addTurma(Turma t){
+		this.turmas.add(t);
+	}
+	
 	public Login getLogin() {
 		return login;
 	}

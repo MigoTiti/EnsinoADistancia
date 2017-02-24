@@ -62,6 +62,10 @@ public class Professor{
 		this.sexo = sexo;
 	}
 
+	public void addTurma(Turma t){
+		this.turmas.add(t);
+	}
+	
 	public Integer getId() {
 		return id;
 	}

@@ -16,11 +16,11 @@ public class AlunoDAOTeste {
 	@Test
 	@Ignore
 	public void testSalvar() {
-		Aluno a = new Aluno("Lucas", 19, "lucasrodriguesgui@hotmail.com", "Lion", "123", "M");
+		Aluno a = new Aluno("Lucas", 19, "lucasrodriguesgui@hotmail.com", "titi", "123", "M");
 		
 		AlunoDAO.salvar(a);
 		
-		System.out.println(AlunoDAO.buscarPorUsuario("Lion").getNome());
+		System.out.println(AlunoDAO.buscarPorUsuario("titi").getNome());
 	}
 
 	@Test
@@ -64,7 +64,6 @@ public class AlunoDAOTeste {
 	}
 
 	@Test
-	@Ignore
 	public void testTurma() {
 		TurmaDAO.salvar(new Turma("Teste", new Date()));
 		Turma t = TurmaDAO.buscarPorNome("Teste");
