@@ -24,7 +24,7 @@
 			 
 			        <p:column style="width:115px;text-align: center">
 			            <p:button value="Detalhes" outcome="detalhar_usuario">
-			            	<f:param name="nomeUsuario" value="#{usuario.nome}" />
+			            	<f:param name="nomeUsuario" value="#{usuario.login.usuario}" />
 			            </p:button>
 			        </p:column>
 			        
@@ -38,7 +38,7 @@
 			        </f:facet>
 			    </p:dataTable>
 			    
-			    <p:dialog header="Adicionar usuário" resizable="false" widgetVar="adicionarUserDlg">
+			    <p:dialog header="Adicionar usuário" resizable="false" widgetVar="adicionarUserDlg" closable="false">
 					<h:panelGrid columns="2" cellpadding="5" id = "grid">
 						<h:outputLabel for="nome" value="Nome: " />
             			<p:inputText id="nome" value="#{usuariosMBean.nome}" required="true" label="nome" />
@@ -70,7 +70,11 @@
 				            <f:selectItem itemLabel="Feminino" itemValue="F" />
 				        </p:selectOneMenu>
 				        
-				        <p:commandButton action="#{usuariosMBean.salvarUsuario()}" value="Salvar" oncomplete="PF('adicionarUserDlg').hide();" update="grid :form:dt" ajax="true"/>
+				        <f:facet name="footer">
+				        	<p:commandButton action="#{usuariosMBean.salvarUsuario()}" value="Salvar" oncomplete="PF('adicionarUserDlg').hide();" update="grid :form:dt" ajax="true"/>
+				        <p:commandButton action="#{usuariosMBean.zerar()}" value="Cancelar" oncomplete="PF('adicionarUserDlg').hide();" />
+				        </f:facet>
+				        
 					</h:panelGrid>
 				</p:dialog>
 			</h:form>

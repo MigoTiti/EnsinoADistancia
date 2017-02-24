@@ -9,10 +9,17 @@
 	<ui:composition template="/templates/template.xhtml">
 		<ui:define name="conteudo">
 			<f:metadata>
-				<f:viewParam name="nomeUsuario" value="#{usuariosMBean.usuarioSelecionado}"/>
+				<f:viewParam name="nomeUsuario" value="#{usuariosMBean.usuario2}"/>
 			</f:metadata>
 			<h:form>
-				
+				<h:panelGrid columns="2" cellpadding="5">
+					<h:outputLabel for="nome" value="Nome: " />
+			        <p:inplace id="nome" editor="true">
+			            <p:inputText value="#{usuariosMBean.nome}" required="true" label="text" />
+			        </p:inplace>
+			        
+			        <p:commandButton value="Salvar alterações" action="#{usuariosMBean.salvarAlteracoes()}"/>
+		        </h:panelGrid>
 			</h:form>
 		</ui:define>
 	</ui:composition>

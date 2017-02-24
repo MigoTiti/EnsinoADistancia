@@ -25,6 +25,7 @@ public class UsuariosMBean {
 	private Integer idade;
 	private String email;
 	private String usuario;
+	private String usuario2;
 	private String senha;
 	private String sexo;
 	private String tipo;
@@ -44,6 +45,45 @@ public class UsuariosMBean {
 		
 		usuarios = popularLista();
 		
+		zerar();
+	}
+	
+	public void salvarAlteracoes(){
+		if (usuarioSelecionado instanceof Aluno){
+			((Aluno) usuarioSelecionado).setNome(nome);
+			((Aluno) usuarioSelecionado).setEmail(email);
+			((Aluno) usuarioSelecionado).setIdade(idade);
+			((Aluno) usuarioSelecionado).setSenha(senha);
+			((Aluno) usuarioSelecionado).setUsuario(usuario);
+			((Aluno) usuarioSelecionado).setSexo(sexo);
+			AlunoDAO.editar((Aluno) usuarioSelecionado);
+			return;
+		}
+		
+		if (usuarioSelecionado instanceof Professor){
+			((Professor) usuarioSelecionado).setNome(nome);
+			((Professor) usuarioSelecionado).setEmail(email);
+			((Professor) usuarioSelecionado).setIdade(idade);
+			((Professor) usuarioSelecionado).setSenha(senha);
+			((Professor) usuarioSelecionado).setUsuario(usuario);
+			((Professor) usuarioSelecionado).setSexo(sexo);
+			ProfessorDAO.editar((Professor) usuarioSelecionado);
+			return;
+		}
+		
+		if (usuarioSelecionado instanceof Administrador){
+			((Administrador) usuarioSelecionado).setNome(nome);
+			((Administrador) usuarioSelecionado).setEmail(email);
+			((Administrador) usuarioSelecionado).setIdade(idade);
+			((Administrador) usuarioSelecionado).setSenha(senha);
+			((Administrador) usuarioSelecionado).setUsuario(usuario);
+			((Administrador) usuarioSelecionado).setSexo(sexo);
+			AdministradorDAO.editar((Administrador) usuarioSelecionado);
+			return;
+		}
+	}
+	
+	public void zerar(){
 		nome = null;
 		idade = null;
 		email = null;
@@ -71,6 +111,14 @@ public class UsuariosMBean {
 			usuarios = popularLista();
 			return;
 		}
+	}
+	
+	public List<Object> popularLista(){
+		List<Object> o = new ArrayList<>(AdministradorDAO.listar());
+		o.addAll(AlunoDAO.listar());
+		o.addAll(ProfessorDAO.listar());
+		
+		return o;
 	}
 	
 	public String getTipo() {
@@ -105,7 +153,7 @@ public class UsuariosMBean {
 		return sexo;
 	}
 
-	public void setNome(String nome) {
+	public void setNome(String nome) {	
 		this.nome = nome;
 	}
 
@@ -129,14 +177,6 @@ public class UsuariosMBean {
 		this.sexo = sexo;
 	}
 
-	public List<Object> popularLista(){
-		List<Object> o = new ArrayList<>(AdministradorDAO.listar());
-		o.addAll(AlunoDAO.listar());
-		o.addAll(ProfessorDAO.listar());
-		
-		return o;
-	}
-
 	public List<Object> getUsuarios() {
 		return usuarios;
 	}
@@ -151,5 +191,37 @@ public class UsuariosMBean {
 
 	public void setUsuarioSelecionado(Object usuarioSelecionado) {
 		this.usuarioSelecionado = usuarioSelecionado;
+	}
+
+	public String getUsuario2() {
+		return usuario2;
+	}
+
+	public void setUsuario2(String usuario2) {
+		this.usuarioSelecionado = AlunoDAO.buscarPorUsuario(usuario2);
+		if (this.usuarioSelecionado == null){
+			this.usuarioSelecionado = ProfessorDAO.buscarPorUsuario(usuario2);
+			if (this.usuarioSelecionado == null){
+				this.usuarioSelecionado = AdministradorDAO.buscarPorUsuario(usuario2);
+				nome = ((Administrador)this.usuarioSelecionado).getNome();
+				idade = ((Administrador)this.usuarioSelecionado).getIdade();
+				sexo = ((Administrador)this.usuarioSelecionado).getSexo();
+				email = ((Administrador)this.usuarioSelecionado).getEmail();
+				senha = ((Administrador)this.usuarioSelecionado).getSenha();
+			} else {
+				nome = ((Professor)this.usuarioSelecionado).getNome();
+				idade = ((Professor)this.usuarioSelecionado).getIdade();
+				sexo = ((Professor)this.usuarioSelecionado).getSexo();
+				email = ((Professor)this.usuarioSelecionado).getEmail();
+				senha = ((Professor)this.usuarioSelecionado).getSenha();
+			}
+		} else {
+			nome = ((Aluno)this.usuarioSelecionado).getNome();
+			idade = ((Aluno)this.usuarioSelecionado).getIdade();
+			sexo = ((Aluno)this.usuarioSelecionado).getSexo();
+			email = ((Aluno)this.usuarioSelecionado).getEmail();
+			senha = ((Aluno)this.usuarioSelecionado).getSenha();
+		}
+		usuario = usuario2;
 	}
 }
