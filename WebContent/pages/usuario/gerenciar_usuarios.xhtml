@@ -11,6 +11,10 @@
 			
 			<h:form id = "form">
 				<p:dataTable var="usuario" value="#{usuariosMBean.usuarios}" style="margin-bottom:40px" id="dt">
+					<p:column headerText="Tipo de usuário" sortBy="#{usuario.getTipo()}">
+			            <h:outputText value="#{usuario.getTipo()}" />
+			        </p:column>
+				
 			        <p:column headerText="Nome" sortBy="#{usuario.nome}">
 			            <h:outputText value="#{usuario.nome}" />
 			        </p:column>
@@ -29,7 +33,7 @@
 			            </p:button>
 			        </p:column>
 			        
-			        <p:column style="width:115px;text-align: center">
+			        <p:column style="width:100px;text-align: center">
 			            <p:commandButton value="Excluir" actionListener="#{usuariosMBean.excluirUsuario}" immediate="true" update="dt">
 			            	<f:attribute name="user" value="#{usuario}"/>
 			            </p:commandButton>

@@ -24,7 +24,9 @@ import javax.persistence.TemporalType;
 @Table(name = "turma")
 @NamedQueries({
 	@NamedQuery(name = "Turma.listarTodos", query = "SELECT t FROM Turma t"),
-	@NamedQuery(name = "Turma.buscarPorNome", query = "SELECT t FROM Turma t WHERE t.nome = :nome")
+	@NamedQuery(name = "Turma.buscarPorNome", query = "SELECT t FROM Turma t WHERE t.nome = :nome"),
+	@NamedQuery(name = "Turma.listarNPertenceAluno", query = "SELECT t FROM Turma t WHERE :aluno NOT MEMBER OF t.alunos"),
+	@NamedQuery(name = "Turma.listarNPertenceProfessor", query = "SELECT t FROM Turma t WHERE :professor != t.professor.id")
 })
 public class Turma {
 

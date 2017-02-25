@@ -6,11 +6,49 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import br.com.ensino.entidade.Aluno;
+import br.com.ensino.entidade.Professor;
 import br.com.ensino.entidade.Turma;
 import br.com.ensino.util.HibernateUtil;
 
 public class TurmaDAO {
 
+	@SuppressWarnings("unchecked")
+	public static List<Turma> listarNPertencentesAluno(Aluno a){
+		Session sessao = HibernateUtil.getSessionFactory().openSession();
+		
+		List<Turma> turmas = null;
+		try {
+			Query query = sessao.getNamedQuery("Turma.listarNPertenceAluno");
+			query.setParameter("aluno", a);
+			turmas = query.list();
+		} catch (RuntimeException ex) {
+			throw ex;
+		} finally {
+			sessao.close();
+		}
+		
+		return turmas;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static List<Turma> listarNPertencentesProfessor(Professor p){
+		Session sessao = HibernateUtil.getSessionFactory().openSession();
+		
+		List<Turma> turmas = null;
+		try {
+			Query query = sessao.getNamedQuery("Turma.listarNPertenceProfessor");
+			query.setParameter("professor", p.getId());
+			turmas = query.list();
+		} catch (RuntimeException ex) {
+			throw ex;
+		} finally {
+			sessao.close();
+		}
+		
+		return turmas;
+	}
+	
 	public static void salvar(Turma turma) {
 		Session sessao = HibernateUtil.getSessionFactory().openSession();
 		Transaction transacao = null;

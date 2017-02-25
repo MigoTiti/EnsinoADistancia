@@ -65,11 +65,10 @@ public class AlunoDAOTeste {
 
 	@Test
 	public void testTurma() {
-		TurmaDAO.salvar(new Turma("Teste", new Date()));
-		Turma t = TurmaDAO.buscarPorNome("Teste");
-		
-		t.addAluno(AlunoDAO.buscarPorUsuario("titi"));
-		TurmaDAO.editar(t);
+		TurmaDAO.salvar(new Turma("Teste2", new Date()));
+		TurmaDAO.salvar(new Turma("Teste3", new Date()));
+		TurmaDAO.salvar(new Turma("Teste4", new Date()));
+		TurmaDAO.salvar(new Turma("Teste5", new Date()));
 	}
 
 }

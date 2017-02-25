@@ -10,9 +10,11 @@ import javax.faces.event.ActionEvent;
 import br.com.ensino.dao.AdministradorDAO;
 import br.com.ensino.dao.AlunoDAO;
 import br.com.ensino.dao.ProfessorDAO;
+import br.com.ensino.dao.TurmaDAO;
 import br.com.ensino.entidade.Administrador;
 import br.com.ensino.entidade.Aluno;
 import br.com.ensino.entidade.Professor;
+import br.com.ensino.entidade.Turma;
 
 @ManagedBean
 @ViewScoped
@@ -30,11 +32,40 @@ public class UsuariosMBean {
 	private String sexo;
 	private String tipo;
 	
+	private List<Turma> turmasMatriculadas;
+	private List<Turma> turmasGeral;
+	private List<Turma> turmasSelecionadas;
+	
 	public boolean notAdministrador(){
 		if (usuarioSelecionado instanceof Administrador)
 			return false;
 		
 		return true;
+	}
+	
+	public void matricularTurmas(){
+		if (turmasSelecionadas.size() > 0){
+			if (usuarioSelecionado instanceof Aluno){
+				for (Turma turma : turmasSelecionadas) {
+					turma.addAluno((Aluno) usuarioSelecionado);
+					TurmaDAO.editar(turma);
+				}
+				usuarioSelecionado = AlunoDAO.buscarPorUsuario(((Aluno) usuarioSelecionado).getUsuario());
+				turmasMatriculadas = new ArrayList<>(((Aluno)usuarioSelecionado).getTurmas());
+			} else if (usuarioSelecionado instanceof Professor) {
+				for (Turma turma : turmasSelecionadas) {
+					turma.setProfessor((Professor) usuarioSelecionado);
+					TurmaDAO.editar(turma);
+				}
+				usuarioSelecionado = ProfessorDAO.buscarPorUsuario(((Professor) usuarioSelecionado).getUsuario());
+				turmasMatriculadas = new ArrayList<>(((Professor)usuarioSelecionado).getTurmas());
+			}
+		}
+	}
+	
+	public void cancelarTurmas(){
+		turmasGeral = null;
+		turmasSelecionadas = null;
 	}
 	
 	public void salvarUsuario(){
@@ -232,5 +263,42 @@ public class UsuariosMBean {
 			senha = ((Aluno)this.usuarioSelecionado).getSenha();
 		}
 		usuario = usuario2;
+	}
+
+	public List<Turma> getTurmasGeral() {
+		if(turmasGeral == null)
+			if (usuarioSelecionado instanceof Aluno)
+				turmasGeral = TurmaDAO.listarNPertencentesAluno((Aluno)usuarioSelecionado);
+			else if (usuarioSelecionado instanceof Professor)
+				turmasGeral = TurmaDAO.listarNPertencentesProfessor((Professor)usuarioSelecionado);
+		
+		return turmasGeral;
+	}
+
+	public void setTurmasGeral(List<Turma> turmasGeral) {
+		this.turmasGeral = turmasGeral;
+	}
+
+	public List<Turma> getTurmasSelecionadas() {
+		return turmasSelecionadas;
+	}
+
+	public void setTurmasSelecionadas(List<Turma> turmasSelecionadas) {
+		this.turmasSelecionadas = turmasSelecionadas;
+	}
+
+
+	public List<Turma> getTurmasMatriculadas() {
+		if (turmasMatriculadas == null)
+			if (usuarioSelecionado instanceof Aluno)
+				turmasMatriculadas = new ArrayList<>(((Aluno)usuarioSelecionado).getTurmas());
+			else 
+				turmasMatriculadas = new ArrayList<>(((Professor)usuarioSelecionado).getTurmas());
+		return turmasMatriculadas;
+	}
+
+
+	public void setTurmasMatriculadas(List<Turma> turmasMatriculadas) {
+		this.turmasMatriculadas = turmasMatriculadas;
 	}
 }

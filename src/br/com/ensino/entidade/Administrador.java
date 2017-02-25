@@ -144,4 +144,8 @@ public class Administrador{
 		this.login = login;
 	}
 	
+	public String getTipo(){
+		return this.getClass().getSimpleName();
+	}
+	
 }

@@ -157,5 +157,7 @@ public class Aluno{
 		this.mensagensForum = mensagensForum;
 	}
 	
-	
+	public String getTipo(){
+		return this.getClass().getSimpleName();
+	}
 }

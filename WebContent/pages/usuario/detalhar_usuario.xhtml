@@ -1,78 +1,116 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	  xmlns:h="http://xmlns.jcp.org/jsf/html"
-	  xmlns:p="http://primefaces.org/ui"
-	  xmlns:f="http://java.sun.com/jsf/core"
-	  xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
-	<ui:composition template="/templates/template.xhtml">
-		<ui:define name="conteudo">
-			<f:metadata>
-				<f:viewParam name="nomeUsuario" value="#{usuariosMBean.usuario2}"/>
-			</f:metadata>
-			<h:form>
-				<p:panelGrid columns="2" layout="grid">
-					<h:panelGrid columns="2" cellspacing="5" cellpadding="5">
-						<h:outputLabel for="nome" value="Nome: " />
-				        <p:inplace id="nome" editor="true">
-				            <p:inputText value="#{usuariosMBean.nome}" required="true" label="text" />
-				        </p:inplace>
-				        
-				        <h:outputLabel for="tipo" value="Sexo: "/>
-				        <p:inplace id="tipo" label="#{usuariosMBean.sexo}" effectSpeed="fast" event="click">
-				            <p:selectOneMenu value="#{usuariosMBean.sexo}">
-				                <f:selectItem itemLabel="Masculino" itemValue="M" />
-				                <f:selectItem itemLabel="Feminino" itemValue="F" />
-				            </p:selectOneMenu>
-				        </p:inplace>
-				        
-				        <h:outputLabel for="email" value="E-mail: " />
-				        <p:inplace id="email" editor="true">
-				            <p:inputText value="#{usuariosMBean.email}" required="true" label="text" />
-				        </p:inplace>
-				        
-				        <h:outputLabel for="idade" value="Idade: " />
-				        <p:inplace id="idade" editor="true">
-				            <p:inputText value="#{usuariosMBean.idade}" required="true" label="text" >
-				            	<p:keyFilter regEx="/[0-9_]/i" />
-				            </p:inputText>
-				        </p:inplace>
-				        
-				        <h:outputLabel for="usuario" value="Nome de usuário: " />
-				        <p:inplace id="usuario" editor="true">
-				            <p:inputText value="#{usuariosMBean.usuario}" required="true" label="text" />
-				        </p:inplace>
-				        
-				        <h:outputLabel for="senha" value="senha: " />
-				        <p:inplace id="senha" editor="true">
-				            <p:inputText value="#{usuariosMBean.senha}" required="true" label="text" />
-				        </p:inplace>
-				        
-				        <f:facet name="footer">
-				        	<p:commandButton value="Salvar alterações" action="#{usuariosMBean.salvarAlteracoes()}"/>
-				        </f:facet>
-			        </h:panelGrid>
-			        <h:panelGrid columns="1" rendered="#{usuariosMBean.notAdministrador()}">
-						<p:dataTable var="turma" value="#{usuariosMBean.usuarioSelecionado.turmas}" style="margin-bottom:40px" id="dTurma">
-							<f:facet name="header">
+<ui:composition template="/templates/template.xhtml">
+	<ui:define name="conteudo">
+		<f:metadata>
+			<f:viewParam name="nomeUsuario" value="#{usuariosMBean.usuario2}" />
+		</f:metadata>
+		<h:form id="form">
+			<p:panelGrid columns="2" layout="grid">
+				<h:panelGrid columns="2" cellspacing="5" cellpadding="5">
+					<h:outputLabel for="nome" value="Nome: " />
+					<p:inplace id="nome" editor="true">
+						<p:inputText value="#{usuariosMBean.nome}" required="true"
+							label="text" />
+					</p:inplace>
+
+					<h:outputLabel for="tipo" value="Sexo: " />
+					<p:inplace id="tipo" label="#{usuariosMBean.sexo}"
+						effectSpeed="fast" event="click">
+						<p:selectOneMenu value="#{usuariosMBean.sexo}">
+							<f:selectItem itemLabel="Masculino" itemValue="M" />
+							<f:selectItem itemLabel="Feminino" itemValue="F" />
+						</p:selectOneMenu>
+					</p:inplace>
+
+					<h:outputLabel for="email" value="E-mail: " />
+					<p:inplace id="email" editor="true">
+						<p:inputText value="#{usuariosMBean.email}" required="true"
+							label="text" />
+					</p:inplace>
+
+					<h:outputLabel for="idade" value="Idade: " />
+					<p:inplace id="idade" editor="true">
+						<p:inputText value="#{usuariosMBean.idade}" required="true"
+							label="text">
+							<p:keyFilter regEx="/[0-9_]/i" />
+						</p:inputText>
+					</p:inplace>
+
+					<h:outputLabel for="usuario" value="Nome de usuário: " />
+					<p:inplace id="usuario" editor="true">
+						<p:inputText value="#{usuariosMBean.usuario}" required="true"
+							label="text" />
+					</p:inplace>
+
+					<h:outputLabel for="senha" value="senha: " />
+					<p:inplace id="senha" editor="true">
+						<p:inputText value="#{usuariosMBean.senha}" required="true"
+							label="text" />
+					</p:inplace>
+
+					<f:facet name="footer">
+						<p:commandButton value="Salvar alterações"
+							action="#{usuariosMBean.salvarAlteracoes()}" />
+					</f:facet>
+				</h:panelGrid>
+				<h:panelGrid columns="1"
+					rendered="#{usuariosMBean.notAdministrador()}" id="gridDT">
+					<p:dataTable var="turma"
+						value="#{usuariosMBean.turmasMatriculadas}"
+						style="margin-bottom:40px" id="dTurma">
+						<f:facet name="header">
 								Turmas matriculadas
 							</f:facet>
-					        <p:column headerText="Nome" sortBy="#{turma.nome}">
-					            <h:outputText value="#{turma.nome}" />
-					        </p:column>
-					 
-					        <p:column headerText="Professor" sortBy="#{usuario.email}">
-					            <h:outputText value="#{turma.professor.nome}" />
-					        </p:column>
+						<p:column headerText="Nome" sortBy="#{turma.nome}">
+							<h:outputText value="#{turma.nome}" />
+						</p:column>
 
-					        <f:facet name="footer">
-					        	<p:commandButton value="Matricular em turma" />
-					        </f:facet>
-					    </p:dataTable>
-			        </h:panelGrid>
-		        </p:panelGrid>
-			</h:form>
-		</ui:define>
-	</ui:composition>
+						<p:column headerText="Professor" sortBy="#{turma.professor.nome}">
+							<h:outputText value="#{turma.professor.nome}" />
+						</p:column>
+
+						<f:facet name="footer">
+							<p:commandButton value="Matricular em turmas"
+								onclick="PF('matricularTurmasDlg').show();" />
+						</f:facet>
+					</p:dataTable>
+				</h:panelGrid>
+			</p:panelGrid>
+
+			<p:dialog header="Escolher turmas" resizable="false"
+				widgetVar="matricularTurmasDlg" closable="false">
+				<p:dataTable tableStyle="width:auto" var="turma"
+					value="#{usuariosMBean.turmasGeral}"
+					selection="#{usuariosMBean.turmasSelecionadas}"
+					rowKey="#{turma.nome}" scrollable="true">
+					<p:column selectionMode="multiple"
+						style="width:16px;text-align:center" />
+
+					<p:column headerText="Nome" sortBy="#{turma.nome}">
+						<h:outputText value="#{turma.nome}" />
+					</p:column>
+
+					<p:column headerText="Professor" sortBy="#{turma.professor.nome}">
+						<h:outputText value="#{turma.professor.nome}" />
+					</p:column>
+				</p:dataTable>
+
+				<f:facet name="footer">
+					<p:commandButton action="#{usuariosMBean.matricularTurmas()}"
+						value="Matricular" oncomplete="PF('matricularTurmasDlg').hide();"
+						update=":form:dTurma" ajax="true" />
+					<p:commandButton action="#{usuariosMBean.cancelarTurmas()}"
+						value="Cancelar" oncomplete="PF('matricularTurmasDlg').hide();" />
+				</f:facet>
+			</p:dialog>
+		</h:form>
+	</ui:define>
+</ui:composition>
 </html>
