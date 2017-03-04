@@ -1,7 +1,9 @@
-package br.com.ensino.util;
+package br.com.ensino.servidor;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+
+import br.com.ensino.util.HibernateUtil;
 
 public class ContextListener implements ServletContextListener{
 

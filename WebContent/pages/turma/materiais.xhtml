@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<ui:composition template="/templates/template_turma.xhtml">
+	<ui:define name="conteudo">
+		<f:metadata>
+			<f:viewParam name="nomeTurma" value="#{turmaMBean.turmaSelecionada}" />
+		</f:metadata>
+		<h:form id="form">
+			<p:growl id="growl" showDetail="true" sticky="true" autoUpdate="true" />
+			<p:dataTable id="dMateriais" var="material" widgetVar="dt"
+				value="#{turmaMBean.materiais}" rows="7" paginator="true"
+				paginatorAlwaysVisible="false"
+				filteredValue="#{turmaMBean.materiaisFiltrados}"
+				emptyMessage="Sem materiais registrados">
+
+				<p:column headerText="Nome" filterBy="#{material.titulo}"
+					sortBy="#{material.titulo}" filterMatchMode="contains">
+					<h:outputText value="#{material.titulo}" />
+				</p:column>
+
+				<p:column headerText="Nome do arquivo"
+					filterBy="#{material.nomeArquivo}" sortBy="#{material.nomeArquivo}"
+					filterMatchMode="contains">
+					<h:outputText value="#{material.nomeArquivo}" />
+				</p:column>
+
+
+				<p:column style="width:115px;text-align: center">
+					<p:commandButton value="Download"
+						actionListener="#{turmaMBean.prepDownload}" ajax="false"
+						immediate="true">
+						<f:attribute name="materialObj" value="#{material}" />
+						<p:fileDownload value="#{turmaMBean.arquivo}" />
+					</p:commandButton>
+				</p:column>
+
+				<p:column style="width:100px;text-align: center"
+					rendered="#{loginMBean.isProfessor()}">
+					<p:commandButton value="Excluir"
+						actionListener="#{turmaMBean.excluirMaterial}" immediate="true"
+						update="dMateriais">
+						<f:attribute name="materialObj" value="#{material}" />
+					</p:commandButton>
+				</p:column>
+
+				<f:facet name="footer">
+					<p:commandButton value="Adicionar material"
+						onclick="PF('adicionarMaterialDlg').show();"
+						rendered="#{loginMBean.isProfessor()}" />
+				</f:facet>
+			</p:dataTable>
+
+			<p:dialog header="Adicionar material" resizable="false"
+				widgetVar="adicionarMaterialDlg" closable="false">
+				<h:panelGrid columns="1" cellpadding="5" id="grid">
+
+					<h:panelGrid columns="2">
+						<h:outputLabel for="nome" value="Nome: " />
+						<p:inputText id="nome" value="#{turmaMBean.nomeMaterial}"
+							label="nome" />
+					</h:panelGrid>
+
+					<h:panelGrid>
+						<p:fileUpload fileUploadListener="#{turmaMBean.upload}"
+							label="Escolher" cancelLabel="Cancelar" mode="advanced"
+							dragDropSupport="false" fileLimit="1" />
+					</h:panelGrid>
+
+					<f:facet name="footer">
+						<p:commandButton action="#{turmaMBean.salvarMaterial()}"
+							value="Salvar"
+							update="grid :form:dMateriais" ajax="true" />
+						<p:commandButton action="#{turmaMBean.zerar()}" value="Cancelar"
+							oncomplete="PF('adicionarMaterialDlg').hide();" update="grid" />
+					</f:facet>
+				</h:panelGrid>
+			</p:dialog>
+		</h:form>
+	</ui:define>
+
+	<ui:define name="menu">
+		<h:form>
+			<p:menu>
+				<p:menuitem value="Aulas" outcome="/pages/turma/aulas">
+					<f:param name="nomeTurma" value="#{turmaMBean.turmaSelecionada}" />
+				</p:menuitem>
+				<p:menuitem value="Materiais" outcome="/pages/turma/materiais">
+					<f:param name="nomeTurma" value="#{turmaMBean.turmaSelecionada}" />
+				</p:menuitem>
+				<p:menuitem value="Atividades"
+					outcome="/pages/turma/atividade/atividades">
+					<f:param name="nomeTurma" value="#{turmaMBean.turmaSelecionada}" />
+				</p:menuitem>
+				<p:menuitem value="Fóruns" outcome="/pages/turma/foruns">
+					<f:param name="nomeTurma" value="#{turmaMBean.turmaSelecionada}" />
+				</p:menuitem>
+			</p:menu>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

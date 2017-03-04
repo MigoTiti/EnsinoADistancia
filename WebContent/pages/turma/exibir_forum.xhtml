@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<ui:composition template="/templates/template_turma.xhtml">
+
+	<f:metadata>
+		<f:viewParam name="nomeTurma" value="#{exibirForumMBean.nometurma}" />
+		<f:viewParam name="forumId" value="#{exibirForumMBean.idForum}" />
+	</f:metadata>
+
+	<ui:define name="conteudo">
+		<h:form id="form">
+			<p:growl id="growl" showDetail="true" sticky="true" autoUpdate="true" />
+			<h:panelGroup id="panel">
+				<p:repeat id="repeat" value="#{exibirForumMBean.mensagensForum}"
+					var="mensagem">
+					<div
+						style="border: 1px solid grey; border-radius: 5px; margin: 10px 0px 10px 0px">
+						<h:outputText
+							value="Por '#{mensagem.getNomeUsuario()}', #{mensagem.hora}"
+							style="margin:5px; display: block;" />
+						<div
+							style="height: 100px; margin: 0px 10px 4px 10px; border: 1px solid grey; border-radius: 5px; background-color: white;">
+							<h:outputText value="#{mensagem.mensagem}" escape="false"
+								style="margin:5px;" />
+						</div>
+						<p:commandButton style="margin: 0px 0px 5px 10px" value="Remover"
+							rendered="#{exibirForumMBean.isAutor(mensagem)}"
+							actionListener="#{exibirForumMBean.excluirMensagem}"
+							update=":form:panel">
+							<f:attribute name="mens" value="#{mensagem}" />
+						</p:commandButton>
+					</div>
+				</p:repeat>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{exibirForumMBean.isAtivo()}">
+				<div style="margin: 10px;">
+					<p:editor id="editor" value="#{exibirForumMBean.mensagemNova}"
+						height="200" />
+					<p:commandButton style="margin-top:5px;"
+						actionListener="#{exibirForumMBean.salvarMensagem}"
+						value="Enviar mensagem" update=":form:panel editor" />
+				</div>
+			</h:panelGroup>
+		</h:form>
+	</ui:define>
+
+	<ui:define name="menu">
+		<h:form>
+			<p:menu>
+				<p:menuitem value="Aulas" outcome="/pages/turma/aulas">
+					<f:param name="nomeTurma" value="#{exibirForumMBean.nometurma}" />
+				</p:menuitem>
+				<p:menuitem value="Materiais" outcome="/pages/turma/materiais">
+					<f:param name="nomeTurma" value="#{exibirForumMBean.nometurma}" />
+				</p:menuitem>
+				<p:menuitem value="Atividades"
+					outcome="/pages/turma/atividade/atividades">
+					<f:param name="nomeTurma" value="#{exibirForumMBean.nometurma}" />
+				</p:menuitem>
+				<p:menuitem value="Fóruns" outcome="/pages/turma/foruns">
+					<f:param name="nomeTurma" value="#{exibirForumMBean.nometurma}" />
+				</p:menuitem>
+			</p:menu>
+		</h:form>
+	</ui:define>
+
+</ui:composition>
+</html>

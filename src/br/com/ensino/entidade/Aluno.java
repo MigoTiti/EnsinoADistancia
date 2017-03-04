@@ -1,5 +1,6 @@
 package br.com.ensino.entidade;
 
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -22,7 +23,9 @@ import org.hibernate.annotations.CascadeType;
 @Table(name = "aluno")
 @NamedQueries({
 	@NamedQuery(name = "Aluno.listarTodos", query = "SELECT a FROM Aluno a"),
-	@NamedQuery(name = "Aluno.buscarPorUsuario", query = "SELECT a FROM Aluno a WHERE a.login.usuario = :usuario")
+	@NamedQuery(name = "Aluno.buscarPorUsuario", query = "SELECT a FROM Aluno a WHERE a.login.usuario = :usuario"),
+	@NamedQuery(name = "Aluno.listarNPertenceTurma", query = "SELECT a FROM Aluno a WHERE :turma NOT MEMBER OF a.turmas"),
+	@NamedQuery(name = "Aluno.buscarPorEmail", query = "SELECT a FROM Aluno a WHERE a.email = :email")
 })
 public class Aluno{
 
@@ -47,7 +50,7 @@ public class Aluno{
 	@Column(length = 1, nullable = false)
 	private String sexo;
 	
-	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "alunos")
+	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "alunos", cascade = {javax.persistence.CascadeType.MERGE})
 	private Set<Turma> turmas;
 	
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "aluno")
@@ -64,6 +67,22 @@ public class Aluno{
 		this.email = email;
 		this.login = new Login(usuario, senha, this);
 		this.sexo = sexo;
+	}
+	
+	public double notaGeral(){
+		Double nota = 0.0;
+		for (Resposta r : respostas) {
+			Double nota2 = r.getPontuacao();
+			
+			if (nota2 != null)
+				nota += nota2;
+		}
+		
+		return nota;
+	}
+	
+	public void removerTurma(Turma t){
+		this.turmas.remove(t);
 	}
 	
 	public void addTurma(Turma t){
@@ -159,5 +178,19 @@ public class Aluno{
 	
 	public String getTipo(){
 		return this.getClass().getSimpleName();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Aluno){
+			return ((Aluno) obj).getId().equals(this.id);
+		}
+		
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
 	}
 }

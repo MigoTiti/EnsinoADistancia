@@ -1,6 +1,8 @@
 package br.com.ensino.entidade;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -22,7 +24,7 @@ import javax.persistence.TemporalType;
 @Table(name = "atividade")
 @NamedQueries({
 	@NamedQuery(name = "Atividade.listarPorTurma", query = "SELECT a FROM Atividade a WHERE a.turma = :turma"),
-	@NamedQuery(name = "Atividade.buscarPorTitulo", query = "SELECT a FROM Atividade a WHERE a.titulo = :titulo")
+	@NamedQuery(name = "Atividade.buscarPorId", query = "SELECT a FROM Atividade a WHERE a.id = :id")
 })
 public class Atividade {
 
@@ -31,12 +33,15 @@ public class Atividade {
 	@Column(name = "id_atividade")
 	private Integer id;
 	
-	@Column(length = 100, nullable = false, unique = true)
+	@Column(length = 100, nullable = false)
 	private String titulo;
 	
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(nullable = false)
 	private Date prazo;
+	
+	@Column(nullable = false)
+	private Double pontuacao;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "id_turma_atividade", referencedColumnName = "id_turma")
@@ -52,7 +57,7 @@ public class Atividade {
 		this.titulo = titulo;
 		this.prazo = prazo;
 	}
-
+	
 	public Integer getId() {
 		return id;
 	}
@@ -71,6 +76,11 @@ public class Atividade {
 
 	public Date getPrazo() {
 		return prazo;
+	}
+	
+	public String formatarData(){
+		SimpleDateFormat s = new SimpleDateFormat("dd/MM/yyyy',' 'às' HH:mm:ss");
+		return s.format(prazo);
 	}
 
 	public void setPrazo(Date prazo) {
@@ -91,6 +101,24 @@ public class Atividade {
 
 	public void setEnunciados(Set<Enunciado> enunciados) {
 		this.enunciados = enunciados;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return ((Atividade) obj).getId().equals(this.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	public Double getPontuacao() {
+		return pontuacao;
+	}
+
+	public void setPontuacao(Double pontuacao) {
+		this.pontuacao = pontuacao;
 	}
 	
 }

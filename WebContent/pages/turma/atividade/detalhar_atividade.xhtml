@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<ui:composition template="/templates/template_turma.xhtml">
+	<f:metadata>
+		<f:viewParam name="nomeTurma"
+			value="#{detalharAtividadeMBean.nomeTurma}" />
+		<f:viewParam name="idAtividade"
+			value="#{detalharAtividadeMBean.idAtividade}" />
+	</f:metadata>
+
+	<ui:define name="conteudo">
+		<h:form id="form" rendered="#{loginMBean.isNotAdministrador()}">
+			<p:growl id="growl" showDetail="true" sticky="true" autoUpdate="true" />
+			<h:outputText style="text-size:23px;text-align:center;display:block;"
+				value="#{detalharAtividadeMBean.atividade.titulo}" />
+			<h:outputText style="text-size:23px;text-align:center;display:block;"
+				value="Prazo de entrega: #{detalharAtividadeMBean.atividade.formatarData()}" />
+
+			<p:dataTable var="enunciado" rendered="#{loginMBean.isProfessor()}"
+				value="#{detalharAtividadeMBean.enunciados}"
+				emptyMessage="Sem enunciados registrados" paginator="true"
+				paginatorAlwaysVisible="false" rows="9" id="dEnunciados">
+				<f:facet name="header">
+            		Enunciados
+        		</f:facet>
+				<p:column style="width:16px" rendered="#{loginMBean.isProfessor()}">
+					<p:rowToggler />
+				</p:column>
+				<p:column>
+					<h:outputText value="#{enunciado.texto}" />
+				</p:column>
+
+				<p:rowExpansion>
+					<p:dataTable var="resposta" value="#{enunciado.getRespostasList()}"
+						emptyMessage="Sem respostas registradas" paginator="true"
+						paginatorAlwaysVisible="false" rows="5" id="dResposta">
+
+						<p:column headerText="Aluno">
+							<h:outputText value="#{resposta.aluno.nome}" />
+						</p:column>
+
+						<p:column headerText="Pontuação atribuída">
+							<h:outputText value="#{resposta.pontuacao}" />
+						</p:column>
+
+						<p:column width="110">
+							<p:commandButton value="Visualizar"
+								oncomplete="PF('DetalhesRespostaDiag').show()"
+								update=":form:grid" immediate="true">
+								<f:setPropertyActionListener value="#{resposta}"
+									target="#{detalharAtividadeMBean.respostaSelecionada}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</p:rowExpansion>
+			</p:dataTable>
+
+			<p:dataTable var="enunciado" rendered="#{loginMBean.isAluno()}"
+				value="#{detalharAtividadeMBean.enunciados}"
+				emptyMessage="Sem enunciados registrados" paginator="true"
+				paginatorAlwaysVisible="false" rows="9" id="dEnunciadosAluno">
+				<f:facet name="header">
+            		Enunciados
+        		</f:facet>
+				<p:column>
+					<h:outputText value="#{enunciado.texto}" />
+				</p:column>
+
+				<p:column headerText="Sua nota">
+					<h:outputText
+						value="#{detalharAtividadeMBean.getRespostaEnunciado(enunciado).pontuacao}" />
+				</p:column>
+
+				<p:column width="141">
+					<p:commandButton value="Ver resposta"
+						rendered="#{detalharAtividadeMBean.isValida(enunciado)}"
+						update=":form:grid2" oncomplete="PF('SuaRespostaDiag').show()"
+						process="@this">
+						<f:setPropertyActionListener value="#{enunciado}"
+							target="#{detalharAtividadeMBean.enunciadoSelecionado}" />
+						<f:setPropertyActionListener
+							value="#{detalharAtividadeMBean.getRespostaEnunciado(enunciado)}"
+							target="#{detalharAtividadeMBean.respostaSelecionada}" />
+					</p:commandButton>
+
+					<p:commandButton value="Responder" update=":form:grid2"
+						oncomplete="PF('SuaRespostaDiag').show()"
+						rendered="#{detalharAtividadeMBean.isValidaAndPrazo(enunciado)}"
+						process="@this">
+						<f:setPropertyActionListener value="#{enunciado}"
+							target="#{detalharAtividadeMBean.enunciadoSelecionado}" />
+						<f:setPropertyActionListener
+							value="#{detalharAtividadeMBean.getRespostaEnunciado(enunciado)}"
+							target="#{detalharAtividadeMBean.respostaSelecionada}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+
+			<p:dialog header="Sua resposta" style="width:400px;"
+				widgetVar="SuaRespostaDiag" resizable="false" closable="false">
+				<h:panelGrid id="grid2" columns="2">
+					<p:scrollPanel rendered="#{detalharAtividadeMBean.isValidaR()}"
+						style="width:300px;height:300px;padding:3px;">
+						<h:outputText
+							style="display:block;width:300px;word-wrap:break-word;"
+							value="#{detalharAtividadeMBean.respostaSelecionada.texto}" />
+					</p:scrollPanel>
+					<h:outputText
+						rendered="#{detalharAtividadeMBean.isValidaAndPrazoR()}"
+						style="display:block;" value="Resposta: " />
+					<p:inputTextarea
+						rendered="#{detalharAtividadeMBean.isValidaAndPrazoR()}" rows="5"
+						cols="40" id="text" style="display:block;margin:7px 0px 7px 0px"
+						autoResize="false" value="#{detalharAtividadeMBean.texto}" />
+
+					<f:facet name="footer">
+						<p:commandButton
+							rendered="#{detalharAtividadeMBean.isValidaAndPrazoR()}"
+							actionListener="#{detalharAtividadeMBean.salvarRespostaAluno}"
+							value="Salvar" update="grid2 :form:dEnunciadosAluno" ajax="true"
+							process="@this, text" />
+						<p:commandButton action="#{detalharAtividadeMBean.zerarAluno()}"
+							rendered="#{detalharAtividadeMBean.isValidaAndPrazoR()}"
+							value="Cancelar" oncomplete="PF('SuaRespostaDiag').hide();"
+							update="grid2" process="@this, text" />
+						<p:commandButton action="#{detalharAtividadeMBean.zerarAluno()}"
+							rendered="#{detalharAtividadeMBean.isValidaR()}" value="Fechar"
+							oncomplete="PF('SuaRespostaDiag').hide();" update="grid2"
+							process="@this" />
+					</f:facet>
+				</h:panelGrid>
+			</p:dialog>
+
+			<p:dialog header="Visualizar resposta"
+				widgetVar="DetalhesRespostaDiag" resizable="false" closable="false">
+				<h:panelGrid id="grid" columns="1">
+					<p:scrollPanel
+						style="width:300px;height:150px;padding:3px;display:block;">
+						<h:outputText
+							style="display:block;width:300px;word-wrap:break-word;"
+							value="#{detalharAtividadeMBean.respostaSelecionada.texto}" />
+					</p:scrollPanel>
+
+					<div>
+						<h:outputText for="correcao" style="display:block;"
+							rendered="#{!detalharAtividadeMBean.prazoAcabou()}"
+							value="Correção:" />
+						<p:scrollPanel rendered="#{detalharAtividadeMBean.isCorrigida()}"
+							style="width:300px;height:150px;padding:3px;display:block;">
+							<h:outputText
+								style="display:block;width:300px;word-wrap:break-word;"
+								value="#{detalharAtividadeMBean.respostaSelecionada.correcao}" />
+						</p:scrollPanel>
+						<p:inputTextarea rows="5" cols="40"
+							style="display:block;margin:7px 0px 7px 0px" autoResize="false"
+							rendered="#{!detalharAtividadeMBean.prazoAcabou() and !detalharAtividadeMBean.isCorrigida()}"
+							value="#{detalharAtividadeMBean.correcao}" id="correcao" />
+					</div>
+
+					<div>
+						<h:outputText for="pont" value="Pontuação final: "
+							rendered="#{!detalharAtividadeMBean.prazoAcabou()}" />
+						<h:outputText id="pont2" disabled="true"
+							rendered="#{detalharAtividadeMBean.isCorrigida()}"
+							value="#{detalharAtividadeMBean.respostaSelecionada.pontuacao}" />
+						<p:inputNumber id="pont"
+							rendered="#{!detalharAtividadeMBean.prazoAcabou() and !detalharAtividadeMBean.isCorrigida()}"
+							value="#{detalharAtividadeMBean.pontuacao}" minValue="0"
+							label="pont" />
+					</div>
+
+					<f:facet name="footer">
+						<p:commandButton
+							rendered="#{!detalharAtividadeMBean.prazoAcabou() and !detalharAtividadeMBean.isCorrigida()}"
+							actionListener="#{detalharAtividadeMBean.salvarResposta}"
+							value="Avaliar" update="grid :form:dEnunciados" ajax="true"
+							process="@this, pont, correcao" />
+						<p:commandButton action="#{detalharAtividadeMBean.zerar()}"
+							rendered="#{!detalharAtividadeMBean.prazoAcabou() and !detalharAtividadeMBean.isCorrigida()}"
+							value="Cancelar" oncomplete="PF('DetalhesRespostaDiag').hide();"
+							update="grid" />
+						<p:commandButton action="#{detalharAtividadeMBean.zerar()}"
+							rendered="#{detalharAtividadeMBean.prazoAcabou() or detalharAtividadeMBean.isCorrigida()}"
+							value="Fechar" oncomplete="PF('DetalhesRespostaDiag').hide();"
+							update="grid" />
+					</f:facet>
+				</h:panelGrid>
+			</p:dialog>
+		</h:form>
+	</ui:define>
+
+	<ui:define name="menu">
+		<h:form>
+			<p:menu>
+				<p:menuitem value="Aulas" outcome="/pages/turma/aulas">
+					<f:param name="nomeTurma"
+						value="#{detalharAtividadeMBean.nomeTurma}" />
+				</p:menuitem>
+				<p:menuitem value="Materiais" outcome="/pages/turma/materiais">
+					<f:param name="nomeTurma"
+						value="#{detalharAtividadeMBean.nomeTurma}" />
+				</p:menuitem>
+				<p:menuitem value="Atividades"
+					outcome="/pages/turma/atividade/atividades">
+					<f:param name="nomeTurma"
+						value="#{detalharAtividadeMBean.nomeTurma}" />
+				</p:menuitem>
+				<p:menuitem value="Fóruns" outcome="/pages/turma/foruns">
+					<f:param name="nomeTurma"
+						value="#{detalharAtividadeMBean.nomeTurma}" />
+				</p:menuitem>
+			</p:menu>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

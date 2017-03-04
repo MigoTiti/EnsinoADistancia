@@ -1,8 +1,12 @@
 package br.com.ensino.entidade;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -26,7 +30,8 @@ import javax.persistence.TemporalType;
 	@NamedQuery(name = "Turma.listarTodos", query = "SELECT t FROM Turma t"),
 	@NamedQuery(name = "Turma.buscarPorNome", query = "SELECT t FROM Turma t WHERE t.nome = :nome"),
 	@NamedQuery(name = "Turma.listarNPertenceAluno", query = "SELECT t FROM Turma t WHERE :aluno NOT MEMBER OF t.alunos"),
-	@NamedQuery(name = "Turma.listarNPertenceProfessor", query = "SELECT t FROM Turma t WHERE :professor != t.professor.id")
+	@NamedQuery(name = "Turma.buscarPorId", query = "SELECT t FROM Turma t WHERE t.id = :id"),
+	@NamedQuery(name = "Turma.listarNPertenceProfessor", query = "SELECT t FROM Turma t WHERE t.professor IS NULL")
 })
 public class Turma {
 
@@ -42,7 +47,7 @@ public class Turma {
 	@JoinColumn(name = "id_professor_turma", referencedColumnName = "id_professor")
 	private Professor professor;
 	
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
 	@JoinTable(name = "alunos_turmas", joinColumns = {@JoinColumn(name = "id_turma")}, inverseJoinColumns = {@JoinColumn(name = "id_aluno")})
 	private Set<Aluno> alunos;
 	
@@ -76,7 +81,15 @@ public class Turma {
 		this.alunos = alunos;
 		this.dataCriacao = dataCriacao;
 	}
+	
+	public List<Forum> getForunsList(){
+		return new ArrayList<>(this.foruns);
+	}
 
+	public void removerAluno(Aluno a){
+		alunos.remove(a);
+	}
+	
 	public void addAluno(Aluno a){
 		alunos.add(a);
 	}
@@ -98,6 +111,9 @@ public class Turma {
 	}
 
 	public Professor getProfessor() {
+		if (professor == null)
+			return new Professor();
+			
 		return professor;
 	}
 
@@ -153,5 +169,13 @@ public class Turma {
 		this.dataCriacao = dataCriacao;
 	}
 	
-	
+	@Override
+	public boolean equals(Object o){
+		return ((Turma)o).getId() == this.id;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, dataCriacao);
+	}
 }

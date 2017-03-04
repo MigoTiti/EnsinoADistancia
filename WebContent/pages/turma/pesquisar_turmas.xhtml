@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<ui:composition template="/templates/template.xhtml">
+	<ui:define name="conteudo">
+		<h:form id="form">
+			<p:dataTable id="dTurmas" var="turma" widgetVar="dt"
+				value="#{pesquisarTurmaMBean.turmas}" rows="7" paginator="true"
+				paginatorAlwaysVisible="false"
+				filteredValue="#{pesquisarTurmaMBean.turmasFiltradas}" emptyMessage="Sem turmas registradas">
+
+				<p:column headerText="Nome" filterBy="#{turma.nome}"
+					sortBy="#{turma.nome}" filterMatchMode="contains">
+					<h:outputText value="#{turma.nome}" />
+				</p:column>
+
+				<p:column headerText="Professor" filterBy="#{turma.professor.nome}"
+					sortBy="#{turma.professor.nome}" filterMatchMode="contains">
+					<h:outputText value="#{turma.professor.nome}" />
+				</p:column>
+
+				<p:column style="width:115px;text-align: center">
+					<p:commandButton value="Detalhes" update=":form:grid :form:dAlunos" 
+						oncomplete="PF('detalhesTurmaDlg').show();">
+						<f:setPropertyActionListener value="#{turma}" target="#{pesquisarTurmaMBean.turmaAtual}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+
+			<p:dialog header="Detalhes" resizable="false"
+				widgetVar="detalhesTurmaDlg" closable="false" draggable="false">
+				<h:panelGrid columns="1" cellpadding="5" id="grid">
+					<h:outputText value="Nome: #{pesquisarTurmaMBean.turmaAtual.nome}" />
+
+					<h:outputText
+						value="Professor: #{pesquisarTurmaMBean.turmaAtual.professor.nome}" />
+
+					<p:commandButton value="Alunos"
+						onclick="PF('detalhesAlunosDlg').show();" />
+
+					<f:facet name="footer">
+						<p:commandButton
+							action="#{pesquisarTurmaMBean.setTurmaAtual(null)}" update="grid"
+							value="Fechar" oncomplete="PF('detalhesTurmaDlg').hide();" />
+					</f:facet>
+				</h:panelGrid>
+			</p:dialog>
+
+			<p:dialog header="Alunos" resizable="false"
+				widgetVar="detalhesAlunosDlg" closable="false" draggable="false">
+				<p:dataTable id="dAlunos" var="aluno" widgetVar="dtable"
+					value="#{pesquisarTurmaMBean.turmaAtual.alunos}" rows="7"
+					paginator="true" paginatorAlwaysVisible="false"
+					tableStyle="width:auto"
+					filteredValue="#{pesquisarTurmaMBean.alunosFiltrados}">
+
+					<p:column headerText="Nome" filterBy="#{aluno.nome}"
+						sortBy="#{aluno.nome}" filterMatchMode="contains">
+						<h:outputText value="#{aluno.nome}" />
+					</p:column>
+
+					<p:column headerText="Usuário" filterBy="#{aluno.login.usuario}"
+						sortBy="#{aluno.login.usuario}" filterMatchMode="contains">
+						<h:outputText value="#{aluno.login.usuario}" />
+					</p:column>
+				</p:dataTable>
+				<f:facet name="footer">
+					<p:commandButton value="Fechar"
+						onclick="PF('detalhesAlunosDlg').hide();" />
+				</f:facet>
+			</p:dialog>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

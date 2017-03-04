@@ -1,5 +1,6 @@
 package br.com.ensino.entidade;
 
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -22,6 +23,8 @@ import org.hibernate.annotations.CascadeType;
 @NamedQueries({
 	@NamedQuery(name = "Administrador.listarTodos", query = "SELECT a FROM Administrador a"),
 	@NamedQuery(name = "Administrador.buscarPorUsuario", query = "SELECT a FROM Administrador a WHERE a.login.usuario = :usuario"),
+	@NamedQuery(name = "Administrador.listarTodosExcetoAtual", query = "SELECT a FROM Administrador a WHERE a.id != :id"),
+	@NamedQuery(name = "Administrador.buscarPorEmail", query = "SELECT a FROM Administrador a WHERE a.email = :email")
 })
 public class Administrador{
 
@@ -147,5 +150,18 @@ public class Administrador{
 	public String getTipo(){
 		return this.getClass().getSimpleName();
 	}
-	
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Administrador){
+			return ((Administrador) obj).getId().equals(this.id);
+		}
+		
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
 }

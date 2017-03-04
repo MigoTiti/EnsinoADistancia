@@ -66,6 +66,25 @@ public class ForumDAO {
 		return f;
 	}
 	
+	public static Forum buscarPorId(Integer id){
+		Session sessao = HibernateUtil.getSessionFactory().openSession();
+		
+		Forum f = null;
+		
+		try {
+			Query query = sessao.getNamedQuery("Forum.buscarPorId");
+			query.setInteger("id", id);
+			
+			f = (Forum) query.uniqueResult();
+		} catch (RuntimeException ex) {
+			throw ex;
+		} finally {
+			sessao.close();
+		}
+		
+		return f;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public static List<Forum> listarPorTurma(Turma turma) {
 		Session sessao = HibernateUtil.getSessionFactory().openSession();

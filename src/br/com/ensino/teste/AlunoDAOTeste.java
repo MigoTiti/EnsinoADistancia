@@ -14,9 +14,9 @@ import br.com.ensino.entidade.Turma;
 public class AlunoDAOTeste {
 
 	@Test
-	@Ignore
+	//@Ignore
 	public void testSalvar() {
-		Aluno a = new Aluno("Lucas", 19, "lucasrodriguesgui@hotmail.com", "titi", "123", "M");
+		Aluno a = new Aluno("Lucas", 19, "lucasrodriguesgui@hotmail.com", "w", "w", "M");
 		
 		AlunoDAO.salvar(a);
 		
@@ -64,6 +64,7 @@ public class AlunoDAOTeste {
 	}
 
 	@Test
+	@Ignore
 	public void testTurma() {
 		TurmaDAO.salvar(new Turma("Teste2", new Date()));
 		TurmaDAO.salvar(new Turma("Teste3", new Date()));

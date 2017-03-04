@@ -9,9 +9,9 @@ import br.com.ensino.entidade.Professor;
 public class ProfDAOTeste {
 
 	@Test
-	@Ignore
+	//@Ignore
 	public void testSalvar() {
-		Professor p = new Professor("Prof 1", 40, "prof@prof", "User1", "s1", "M");
+		Professor p = new Professor("Prof 1", 40, "prof@prof", "q", "q", "M");
 		
 		ProfessorDAO.salvar(p);
 	}

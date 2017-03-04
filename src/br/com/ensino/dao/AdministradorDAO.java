@@ -28,6 +28,28 @@ public class AdministradorDAO {
 		}
 	}
 	
+	public static boolean checkEmail(String email) {
+		Session sessao = HibernateUtil.getSessionFactory().openSession();
+
+		Object user = null;
+
+		try {
+			Query query = sessao.getNamedQuery("Administrador.buscarPorEmail");
+			query.setString("email", email);
+
+			user = query.uniqueResult();
+		} catch (RuntimeException ex) {
+			throw ex;
+		} finally {
+			sessao.close();
+		}
+
+		if (user == null)
+			return true;
+		else
+			return false;
+	}
+	
 	public static void editar(Administrador administrador) {
 		Session sessao = HibernateUtil.getSessionFactory().openSession();
 		Transaction transacao = null;
@@ -62,6 +84,24 @@ public class AdministradorDAO {
 		}
 		
 		return a;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static List<Administrador> listarExcetoAtual(Administrador a) {
+		Session sessao = HibernateUtil.getSessionFactory().openSession();
+		
+		List<Administrador> administradores = null;
+		try {
+			Query query = sessao.getNamedQuery("Administrador.listarTodosExcetoAtual");
+			query.setInteger("id", a.getId());
+			administradores = query.list();
+		} catch (RuntimeException ex) {
+			throw ex;
+		} finally {
+			sessao.close();
+		}
+		
+		return administradores;
 	}
 	
 	@SuppressWarnings("unchecked")

@@ -1,12 +1,37 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	  xmlns:h="http://xmlns.jcp.org/jsf/html"
-	  xmlns:p="http://primefaces.org/ui"
-	  xmlns:f="http://java.sun.com/jsf/core"
-	  xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
-	<ui:composition template="/templates/template.xhtml">
-	
-	</ui:composition>
+<ui:composition template="/templates/template_turma.xhtml">
+	<f:metadata>
+		<f:viewParam name="nomeTurma" value="#{turmaMBean.turmaSelecionada}" />
+	</f:metadata>
+
+	<ui:define name="conteudo">
+		<h:outputText value="Nota total: #{loginMBean.alunoLogado.notaGeral()}" rendered="#{loginMBean.isAluno()}"/>
+	</ui:define>
+
+	<ui:define name="menu">
+		<h:form>
+			<p:menu>
+				<p:menuitem value="Aulas" outcome="/pages/turma/aulas">
+					<f:param name="nomeTurma" value="#{turmaMBean.turmaSelecionada}" />
+				</p:menuitem>
+				<p:menuitem value="Materiais" outcome="/pages/turma/materiais">
+					<f:param name="nomeTurma" value="#{turmaMBean.turmaSelecionada}" />
+				</p:menuitem>
+				<p:menuitem value="Atividades" outcome="/pages/turma/atividade/atividades">
+					<f:param name="nomeTurma" value="#{turmaMBean.turmaSelecionada}" />
+				</p:menuitem>
+				<p:menuitem value="Fóruns" outcome="/pages/turma/foruns">
+					<f:param name="nomeTurma" value="#{turmaMBean.turmaSelecionada}" />
+				</p:menuitem>
+			</p:menu>
+		</h:form>
+	</ui:define>
+</ui:composition>
 </html>

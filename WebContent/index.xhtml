@@ -10,22 +10,18 @@
 </h:head>
 <h:body>
 	<h:form style="width: 400px; heigth: 200px; margin: 0 auto;">
-	    <p:panel header="Login no sistema" >
-	        <p:messages />
-	 
-	        <h:panelGrid columns="3" cellpadding="5" >
-	        
+		<p:growl showDetail="true" autoUpdate="true" closable="true" />
+	    <p:panel header="Login no sistema">
+	        <h:panelGrid columns="2" cellpadding="5" >
 	            <h:outputLabel for="login" value="Usuário: " />
-	            <p:inputText id="login" value="#{loginMBean.usuario}" label="usuario" required="true"/>
-	            <p:message for="login" />
+	            <p:inputText id="login" value="#{loginMBean.usuario}" label="usuario"/>
 	 
 	            <h:outputLabel for="senha" value="Senha: " />
-	            <p:password id="senha" value="#{loginMBean.senha}" label="senha" required="true"/>
-	            <p:message for="senha" />
+	            <p:password id="senha" value="#{loginMBean.senha}" label="senha"/>
 	 
 	        </h:panelGrid>
 	 
-	        <p:commandButton value="Login" ajax="false" icon="ui-icon-check" validateClient="true" action="#{loginMBean.login}"/>
+	        <p:commandButton value="Login" ajax="false" icon="ui-icon-check" action="#{loginMBean.login}"/>
 	    </p:panel>
 	</h:form>
 </h:body>

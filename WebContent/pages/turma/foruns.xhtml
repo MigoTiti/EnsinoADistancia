@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<ui:composition template="/templates/template_turma.xhtml">
+	<f:metadata>
+		<f:viewParam name="nomeTurma" value="#{forunsMBean.nomeTurma}" />
+	</f:metadata>
+
+	<ui:define name="conteudo">
+		<h:form id="form">
+			<p:growl id="growl" showDetail="true" sticky="true" autoUpdate="true" />
+			<p:dataTable id="dForuns" var="forum" widgetVar="dt"
+				value="#{forunsMBean.foruns}" rows="7" paginator="true"
+				paginatorAlwaysVisible="false" emptyMessage="Sem foruns registrados">
+
+				<p:column headerText="Foruns" style="text-align: center;">
+					<h:panelGrid columns="1" border="0" style="text-align: left;">
+						<p:link value="#{forum.titulo}" outcome="exibir_forum"
+							style="font-size:20px; font-weight:bold">
+							<f:param name="forumId" value="#{forum.id}" />
+							<f:param name="nomeTurma" value="#{forunsMBean.nomeTurma}" />
+						</p:link>
+						<p:outputLabel value="#{forum.dataCriacao}"
+							style="font-size:12px;" />
+					</h:panelGrid>
+				</p:column>
+				<f:facet name="footer">
+					<p:commandButton value="Adicionar fórum"
+						onclick="PF('adicionarForumDlg').show();"
+						rendered="#{loginMBean.isLogado()}" />
+				</f:facet>
+			</p:dataTable>
+
+			<p:dialog header="Adicionar forum" resizable="false"
+				widgetVar="adicionarForumDlg" closable="false">
+				<h:panelGrid columns="1" cellpadding="5" id="grid">
+
+					<h:panelGrid columns="2">
+						<h:outputLabel for="nome" value="Nome: " />
+						<p:inputText id="nome" value="#{forunsMBean.nomeForum}"
+							label="nome" />
+					</h:panelGrid>
+
+					<p:editor widgetVar="editor"
+						value="#{forunsMBean.textoPrimeiraMensagem}" height="150" />
+
+					<f:facet name="footer">
+						<p:commandButton action="#{forunsMBean.salvarForum()}"
+							value="Salvar" update="grid :form:dForuns" ajax="true" />
+						<p:commandButton action="#{forunsMBean.zerar()}" value="Cancelar"
+							oncomplete="PF('adicionarForumDlg').hide();" update="grid" />
+					</f:facet>
+				</h:panelGrid>
+			</p:dialog>
+		</h:form>
+	</ui:define>
+
+	<ui:define name="menu">
+		<h:form>
+			<p:menu>
+				<p:menuitem value="Aulas" outcome="/pages/turma/aulas">
+					<f:param name="nomeTurma" value="#{forunsMBean.nomeTurma}" />
+				</p:menuitem>
+				<p:menuitem value="Materiais" outcome="/pages/turma/materiais">
+					<f:param name="nomeTurma" value="#{forunsMBean.nomeTurma}" />
+				</p:menuitem>
+				<p:menuitem value="Atividades"
+					outcome="/pages/turma/atividade/atividades">
+					<f:param name="nomeTurma" value="#{forunsMBean.nomeTurma}" />
+				</p:menuitem>
+				<p:menuitem value="Fóruns" outcome="/pages/turma/foruns">
+					<f:param name="nomeTurma" value="#{forunsMBean.nomeTurma}" />
+				</p:menuitem>
+			</p:menu>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

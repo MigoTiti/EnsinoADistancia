@@ -12,12 +12,13 @@
 			<f:viewParam name="nomeUsuario" value="#{usuariosMBean.usuario2}" />
 		</f:metadata>
 		<h:form id="form">
-			<p:panelGrid columns="2" layout="grid">
+			<p:growl id="growl" showDetail="true" sticky="true" autoUpdate="true" />
+			<p:panelGrid columns="2" layout="grid" id="grid">
 				<h:panelGrid columns="2" cellspacing="5" cellpadding="5">
 					<h:outputLabel for="nome" value="Nome: " />
 					<p:inplace id="nome" editor="true">
 						<p:inputText value="#{usuariosMBean.nome}" required="true"
-							label="text" />
+							label="text" requiredMessage="O campo 'Nome' não pode ser vazio" />
 					</p:inplace>
 
 					<h:outputLabel for="tipo" value="Sexo: " />
@@ -32,39 +33,36 @@
 					<h:outputLabel for="email" value="E-mail: " />
 					<p:inplace id="email" editor="true">
 						<p:inputText value="#{usuariosMBean.email}" required="true"
+							requiredMessage="O campo 'E-mail' não pode ser vazio"
 							label="text" />
 					</p:inplace>
 
 					<h:outputLabel for="idade" value="Idade: " />
 					<p:inplace id="idade" editor="true">
-						<p:inputText value="#{usuariosMBean.idade}" required="true"
-							label="text">
-							<p:keyFilter regEx="/[0-9_]/i" />
-						</p:inputText>
-					</p:inplace>
-
-					<h:outputLabel for="usuario" value="Nome de usuário: " />
-					<p:inplace id="usuario" editor="true">
-						<p:inputText value="#{usuariosMBean.usuario}" required="true"
-							label="text" />
+						<p:inputNumber value="#{usuariosMBean.idade}" required="true"
+							label="text" minValue="1"
+							requiredMessage="O campo 'Idade' não pode ser vazio"
+							decimalPlaces="0" />
 					</p:inplace>
 
 					<h:outputLabel for="senha" value="senha: " />
 					<p:inplace id="senha" editor="true">
 						<p:inputText value="#{usuariosMBean.senha}" required="true"
-							label="text" />
+							label="text" requiredMessage="O campo 'Senha' não pode ser vazio" />
 					</p:inplace>
 
 					<f:facet name="footer">
 						<p:commandButton value="Salvar alterações"
-							action="#{usuariosMBean.salvarAlteracoes()}" />
+							action="#{usuariosMBean.salvarAlteracoes()}" update=":form:grid"/>
 					</f:facet>
 				</h:panelGrid>
 				<h:panelGrid columns="1"
 					rendered="#{usuariosMBean.notAdministrador()}" id="gridDT">
 					<p:dataTable var="turma"
 						value="#{usuariosMBean.turmasMatriculadas}"
-						style="margin-bottom:40px" id="dTurma">
+						style="margin-bottom:40px" id="dTurma" paginator="true"
+						paginatorAlwaysVisible="false" rows="6" tableStyle="width:auto"
+						emptyMessage="Não está matriculado em nenhuma turma">
 						<f:facet name="header">
 								Turmas matriculadas
 							</f:facet>
@@ -76,8 +74,22 @@
 							<h:outputText value="#{turma.professor.nome}" />
 						</p:column>
 
+						<p:column style="text-align: center"
+							rendered="#{usuariosMBean.isAluno()}">
+							<p:commandButton value="Remover aluno de turma"
+								action="#{usuariosMBean.removerAlunoDeTurma(turma)}"
+								update="dTurma :form:dTurmas" />
+						</p:column>
+
+						<p:column style="text-align: center"
+							rendered="#{usuariosMBean.isProfessor()}">
+							<p:commandButton value="Remover professor de turma"
+								action="#{usuariosMBean.removerProfessorDeTurma(turma)}"
+								update="dTurma :form:dTurmas" />
+						</p:column>
+
 						<f:facet name="footer">
-							<p:commandButton value="Matricular em turmas"
+							<p:commandButton value="Matricular em turmas" rendered="#{usuariosMBean.notAdministrador()}"
 								onclick="PF('matricularTurmasDlg').show();" />
 						</f:facet>
 					</p:dataTable>
@@ -89,7 +101,8 @@
 				<p:dataTable tableStyle="width:auto" var="turma"
 					value="#{usuariosMBean.turmasGeral}"
 					selection="#{usuariosMBean.turmasSelecionadas}"
-					rowKey="#{turma.nome}" scrollable="true">
+					rowKey="#{turma.nome}" paginator="true"
+					paginatorAlwaysVisible="false" rows="5" id="dTurmas">
 					<p:column selectionMode="multiple"
 						style="width:16px;text-align:center" />
 
@@ -105,7 +118,7 @@
 				<f:facet name="footer">
 					<p:commandButton action="#{usuariosMBean.matricularTurmas()}"
 						value="Matricular" oncomplete="PF('matricularTurmasDlg').hide();"
-						update=":form:dTurma" ajax="true" />
+						update=":form:dTurma :form:dTurmas" ajax="true" />
 					<p:commandButton action="#{usuariosMBean.cancelarTurmas()}"
 						value="Cancelar" oncomplete="PF('matricularTurmasDlg').hide();" />
 				</f:facet>

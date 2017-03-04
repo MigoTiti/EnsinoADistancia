@@ -1,5 +1,7 @@
 package br.com.ensino.entidade;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -22,14 +24,17 @@ public class Resposta {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id_enunciado")
+	@Column(name = "id_resposta")
 	private Integer id;
 	
-	@Column(nullable = false)
+	@Column(nullable = false, length = 30000)
 	private String texto;
 	
+	@Column(length = 30000)
+	private String correcao;
+	
 	@Column
-	private Float pontuacao;
+	private Double pontuacao;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "id_enunciado_resposta", referencedColumnName = "id_enunciado")
@@ -38,4 +43,73 @@ public class Resposta {
 	@ManyToOne
 	@JoinColumn(name = "id_aluno_resposta", referencedColumnName = "id_aluno")
 	private Aluno aluno;
+	
+	public Resposta() {
+	}
+
+	public Resposta(String texto, Enunciado enunciado, Aluno aluno) {
+		this.texto = texto;
+		this.enunciado = enunciado;
+		this.aluno = aluno;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return ((Resposta) obj).getId().equals(this.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getTexto() {
+		return texto;
+	}
+
+	public void setTexto(String texto) {
+		this.texto = texto;
+	}
+
+	public Double getPontuacao() {
+		return pontuacao;
+	}
+
+	public void setPontuacao(Double pontuacao) {
+		this.pontuacao = pontuacao;
+	}
+
+	public Enunciado getEnunciado() {
+		return enunciado;
+	}
+
+	public void setEnunciado(Enunciado enunciado) {
+		this.enunciado = enunciado;
+	}
+
+	public Aluno getAluno() {
+		return aluno;
+	}
+
+	public void setAluno(Aluno aluno) {
+		this.aluno = aluno;
+	}
+
+	public String getCorrecao() {
+		return correcao;
+	}
+
+	public void setCorrecao(String correcao) {
+		this.correcao = correcao;
+	}
+	
+	
 }

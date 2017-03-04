@@ -1,5 +1,8 @@
 package br.com.ensino.entidade;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -29,11 +32,8 @@ public class Enunciado {
 	@Column(name = "id_enunciado")
 	private Integer id;
 	
-	@Column(nullable = false)
+	@Column(nullable = false, length = 30000)
 	private String texto;
-	
-	@Column(nullable = false)
-	private Float pontuacao;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "id_atividade_enunciado", referencedColumnName = "id_atividade")
@@ -45,9 +45,12 @@ public class Enunciado {
 	public Enunciado() {
 	}
 
-	public Enunciado(String texto, Float pontuacao) {
+	public Enunciado(String texto) {
 		this.texto = texto;
-		this.pontuacao = pontuacao;
+	}
+	
+	public List<Resposta> getRespostasList(){
+		return new ArrayList<>(respostas);
 	}
 	
 	public Integer getId() {
@@ -66,14 +69,6 @@ public class Enunciado {
 		this.texto = texto;
 	}
 
-	public Float getPontuacao() {
-		return pontuacao;
-	}
-
-	public void setPontuacao(Float pontuacao) {
-		this.pontuacao = pontuacao;
-	}
-
 	public Atividade getAtividade() {
 		return atividade;
 	}
@@ -88,5 +83,15 @@ public class Enunciado {
 
 	public void setResposta(Set<Resposta> resposta) {
 		this.respostas = resposta;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return ((Enunciado) obj).getId().equals(this.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
 	}
 }

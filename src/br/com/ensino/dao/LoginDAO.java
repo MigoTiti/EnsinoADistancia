@@ -15,7 +15,7 @@ public class LoginDAO {
 	public static void salvar(Login login) {
 		Session sessao = HibernateUtil.getSessionFactory().openSession();
 		Transaction transacao = null;
-		
+
 		try {
 			transacao = sessao.beginTransaction();
 			sessao.save(login);
@@ -28,11 +28,33 @@ public class LoginDAO {
 			sessao.close();
 		}
 	}
-	
+
+	public static boolean checkUsuario(String usuario) {
+		Session sessao = HibernateUtil.getSessionFactory().openSession();
+
+		Object user = null;
+
+		try {
+			Query query = sessao.getNamedQuery("Login.buscarPorUsuario");
+			query.setString("usuario", usuario);
+
+			user = query.uniqueResult();
+		} catch (RuntimeException ex) {
+			throw ex;
+		} finally {
+			sessao.close();
+		}
+
+		if (user == null)
+			return true;
+		else
+			return false;
+	}
+
 	public static void editar(Login login) {
 		Session sessao = HibernateUtil.getSessionFactory().openSession();
 		Transaction transacao = null;
-		
+
 		try {
 			transacao = sessao.beginTransaction();
 			sessao.update(login);
@@ -45,11 +67,11 @@ public class LoginDAO {
 			sessao.close();
 		}
 	}
-	
-	public static void deletar(Login login){
+
+	public static void deletar(Login login) {
 		Session sessao = HibernateUtil.getSessionFactory().openSession();
 		Transaction transacao = null;
-		
+
 		try {
 			transacao = sessao.beginTransaction();
 			sessao.delete(login);
@@ -62,38 +84,38 @@ public class LoginDAO {
 			sessao.close();
 		}
 	}
-	
-	public static Object buscarUsuario(String usuario, String senha){
+
+	public static Object buscarUsuario(String usuario, String senha) {
 		Session sessao = HibernateUtil.getSessionFactory().openSession();
-		
+
 		Login user = null;
-		
+
 		try {
 			Query query = sessao.getNamedQuery("Login.buscarPorUsuarioESenha");
 			query.setString("usuario", usuario);
 			query.setString("senha", senha);
-			
+
 			user = (Login) query.uniqueResult();
 		} catch (RuntimeException ex) {
 			throw ex;
 		} finally {
 			sessao.close();
 		}
-		
-		if (user != null){
+
+		if (user != null) {
 			Administrador adm = user.getAdministrador();
 			if (adm != null)
 				return adm;
-			
+
 			Professor p = user.getProfessor();
 			if (p != null)
 				return p;
-			
+
 			Aluno al = user.getAluno();
 			if (al != null)
 				return al;
 		}
-		
+
 		return null;
 	}
 }

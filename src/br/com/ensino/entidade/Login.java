@@ -1,5 +1,7 @@
 package br.com.ensino.entidade;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -18,14 +20,15 @@ import org.hibernate.annotations.CascadeType;
 @Entity
 @Table(name = "login")
 @NamedQueries({
-	@NamedQuery(name = "Login.buscarPorUsuarioESenha", query = "SELECT l FROM Login l WHERE l.usuario = :usuario AND l.senha = :senha")
+	@NamedQuery(name = "Login.buscarPorUsuarioESenha", query = "SELECT l FROM Login l WHERE l.usuario = :usuario AND l.senha = :senha"),
+	@NamedQuery(name = "Login.buscarPorUsuario", query = "SELECT l FROM Login l WHERE l.usuario = :usuario")
 })
 public class Login {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id_login")
-	private Integer idLogin;
+	private Integer id;
 	
 	@Column(nullable = false, unique = true)
 	private String usuario;
@@ -74,12 +77,12 @@ public class Login {
 		this.administrador = administrador;
 	}
 
-	public Integer getIdLogin() {
-		return idLogin;
+	public Integer getId() {
+		return id;
 	}
 
-	public void setIdLogin(Integer idLogin) {
-		this.idLogin = idLogin;
+	public void setId(Integer idLogin) {
+		this.id = idLogin;
 	}
 
 	public String getUsuario() {
@@ -122,4 +125,13 @@ public class Login {
 		this.professor = professor;
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		return ((Login) obj).getId().equals(this.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
 }

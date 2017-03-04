@@ -1,5 +1,8 @@
 package br.com.ensino.entidade;
 
+import java.util.Date;
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "mensagem_forum")
@@ -19,10 +24,11 @@ public class MensagemForum {
 	@Column(name = "id_mensagem_forum")
 	private Integer id;
 	
-	@Column
-	private String titulo;
-	
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(nullable = false)
+	private Date hora;
+	
+	@Column(nullable = false, columnDefinition = "varchar(8000)")
 	private String mensagem;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -43,11 +49,50 @@ public class MensagemForum {
 	
 	public MensagemForum() {
 	}
+	
+	public Object getUsuario(){
+		if (aluno == null) 
+			if (professor == null) 
+				if (administrador == null)
+					return null;
+				else
+					return administrador;
+			 else 
+				return professor;
+		 else
+			return aluno;
+	}
+	
+	public String getNomeUsuario(){
+		if (aluno == null) 
+			if (professor == null) 
+				if (administrador == null)
+					return null;
+				else
+					return administrador.getUsuario();
+			 else 
+				return professor.getUsuario();
+		 else
+			return aluno.getUsuario();
+	}
 
-	public MensagemForum(String titulo, String mensagem, Administrador administrador) {
-		this.titulo = titulo;
+	public MensagemForum(Date hora, String mensagem, Forum forum) {
+		this.hora = hora;
 		this.mensagem = mensagem;
-		this.administrador = administrador;
+		this.forum = forum;
+	}
+
+	public MensagemForum(String mensagem, Object usuario, Forum f) {
+		this.mensagem = mensagem;
+		if (usuario instanceof Administrador)
+			this.administrador = (Administrador) usuario;
+		else if (usuario instanceof Aluno)
+			this.aluno = (Aluno) usuario;
+		else if (usuario instanceof Professor)
+			this.professor = (Professor) usuario;
+		
+		this.hora = new Date();
+		this.forum = f;
 	}
 
 	public Integer getId() {
@@ -56,14 +101,6 @@ public class MensagemForum {
 
 	public void setId(Integer id) {
 		this.id = id;
-	}
-
-	public String getTitulo() {
-		return titulo;
-	}
-
-	public void setTitulo(String titulo) {
-		this.titulo = titulo;
 	}
 
 	public String getMensagem() {
@@ -106,5 +143,21 @@ public class MensagemForum {
 		this.administrador = administrador;
 	}
 	
-	
+	@Override
+	public boolean equals(Object obj) {
+		return ((MensagemForum) obj).getId().equals(this.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+	public Date getHora() {
+		return hora;
+	}
+
+	public void setHora(Date hora) {
+		this.hora = hora;
+	}
 }

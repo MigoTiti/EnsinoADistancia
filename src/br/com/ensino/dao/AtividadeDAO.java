@@ -46,14 +46,14 @@ public class AtividadeDAO {
 		}
 	}
 	
-	public static Atividade buscarPorTitulo(String titulo){
+	public static Atividade buscarPorId(Integer id){
 		Session sessao = HibernateUtil.getSessionFactory().openSession();
 		
 		Atividade a = null;
 		
 		try {
-			Query query = sessao.getNamedQuery("Atividade.buscarPorTitulo");
-			query.setString("titulo", titulo);
+			Query query = sessao.getNamedQuery("Atividade.buscarPorId");
+			query.setInteger("id", id);
 			
 			a = (Atividade) query.uniqueResult();
 		} catch (RuntimeException ex) {
@@ -83,13 +83,13 @@ public class AtividadeDAO {
 		return atividades;
 	}
 
-	public static void deletarPorTitulo(String titulo){
+	public static void deletarPorId(Integer id){
 		Session sessao = HibernateUtil.getSessionFactory().openSession();
 		Transaction transacao = null;
 		
 		try {
 			transacao = sessao.beginTransaction();
-			sessao.delete(buscarPorTitulo(titulo));
+			sessao.delete(buscarPorId(id));
 			transacao.commit();
 		} catch (RuntimeException ex) {
 			if (transacao != null)

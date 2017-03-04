@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<ui:composition template="/templates/template.xhtml">
+	<ui:define name="conteudo">
+		<h:form id="form">
+			<p:growl id="growl" showDetail="true" sticky="true" autoUpdate="true" />
+			<p:panelGrid columns="2" layout="grid" id="grid">
+				<h:panelGrid columns="2" cellspacing="5" cellpadding="5">
+					<h:outputLabel for="nome" value="Nome: " />
+					<p:inplace id="nome" editor="true">
+						<p:inputText value="#{meuPerfilMBean.nome}" required="true"
+							label="text" requiredMessage="O campo 'Nome' deve ser preenchido" />
+					</p:inplace>
+
+					<h:outputLabel for="tipo" value="Sexo: " />
+					<p:inplace id="tipo" label="#{meuPerfilMBean.sexo}"
+						effectSpeed="fast" event="click">
+						<p:selectOneMenu value="#{meuPerfilMBean.sexo}">
+							<f:selectItem itemLabel="Masculino" itemValue="M" />
+							<f:selectItem itemLabel="Feminino" itemValue="F" />
+						</p:selectOneMenu>
+					</p:inplace>
+
+					<h:outputLabel for="email" value="E-mail: " />
+					<p:inplace id="email" editor="true">
+						<p:inputText value="#{meuPerfilMBean.email}" required="true"
+							label="text"
+							requiredMessage="O campo 'E-mail' deve ser preenchido" />
+					</p:inplace>
+
+					<h:outputLabel for="idade" value="Idade: " />
+					<p:inplace id="idade" editor="true">
+						<p:inputNumber value="#{meuPerfilMBean.idade}" required="true"
+							label="text" minValue="1"
+							requiredMessage="O campo 'Idade' não pode ser vazio"
+							decimalPlaces="0" />
+					</p:inplace>
+
+					<h:outputLabel for="senha" value="senha: " />
+					<p:inplace id="senha" editor="true">
+						<p:inputText value="#{meuPerfilMBean.senha}" required="true"
+							label="text"
+							requiredMessage="O campo 'Senha' deve ser preenchido" />
+					</p:inplace>
+
+					<f:facet name="footer">
+						<p:commandButton value="Salvar alterações"
+							update=":form:grid grid"
+							actionListener="#{meuPerfilMBean.editarUsuario}"
+							process="@this, nome, idade, senha, email, tipo" ajax="true" />
+					</f:facet>
+				</h:panelGrid>
+			</p:panelGrid>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

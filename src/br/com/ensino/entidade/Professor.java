@@ -1,5 +1,6 @@
 package br.com.ensino.entidade;
 
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -22,6 +23,7 @@ import org.hibernate.annotations.CascadeType;
 @NamedQueries({
 	@NamedQuery(name = "Professor.listarTodos", query = "SELECT p FROM Professor p"),
 	@NamedQuery(name = "Professor.buscarPorUsuario", query = "SELECT p FROM Professor p WHERE p.login.usuario = :usuario"),
+	@NamedQuery(name = "Professor.buscarPorEmail", query = "SELECT p FROM Professor p WHERE p.email = :email")
 })
 public class Professor{
 
@@ -52,7 +54,9 @@ public class Professor{
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "professor")
 	private Set<MensagemForum> mensagensForum;
 	
-	public Professor() {}
+	public Professor() {
+		this.nome = "Sem professor";
+	}
 
 	public Professor(String nome, Integer idade, String email, String usuario, String senha, String sexo) {
 		this.nome = nome;
@@ -148,5 +152,24 @@ public class Professor{
 	
 	public String getTipo(){
 		return this.getClass().getSimpleName();
+	}
+	
+	@Override
+	public String toString(){
+		return nome;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Professor){
+			return ((Professor) obj).getId().equals(this.id);
+		}
+		
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
 	}
 }

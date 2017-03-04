@@ -28,6 +28,28 @@ public class ProfessorDAO {
 		}
 	}
 	
+	public static boolean checkEmail(String email) {
+		Session sessao = HibernateUtil.getSessionFactory().openSession();
+
+		Object user = null;
+
+		try {
+			Query query = sessao.getNamedQuery("Professor.buscarPorEmail");
+			query.setString("email", email);
+
+			user = query.uniqueResult();
+		} catch (RuntimeException ex) {
+			throw ex;
+		} finally {
+			sessao.close();
+		}
+
+		if (user == null)
+			return true;
+		else
+			return false;
+	}
+	
 	public static void editar(Professor professor) {
 		Session sessao = HibernateUtil.getSessionFactory().openSession();
 		Transaction transacao = null;

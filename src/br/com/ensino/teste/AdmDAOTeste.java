@@ -1,21 +1,41 @@
 package br.com.ensino.teste;
 
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
 import br.com.ensino.dao.AdministradorDAO;
+import br.com.ensino.dao.AlunoDAO;
+import br.com.ensino.dao.ProfessorDAO;
+import br.com.ensino.dao.TurmaDAO;
 import br.com.ensino.entidade.Administrador;
+import br.com.ensino.entidade.Aluno;
+import br.com.ensino.entidade.Professor;
+import br.com.ensino.entidade.Turma;
 
 public class AdmDAOTeste {
 
 	@Test
 	//@Ignore
 	public void testSalvar() {
-		Administrador a = new Administrador("titititiiiiiii", 19, "eu@eua", "eita", "123", "M");
-		
+		Administrador a = new Administrador("titititiiiiiii", 19, "eu@eua", "e", "e", "M");
 		AdministradorDAO.salvar(a);
+		
+		Professor p = new Professor("Prof 1", 40, "prof@prof", "q", "q", "M");
+		ProfessorDAO.salvar(p);
+		
+		Aluno al = new Aluno("Lucas", 19, "lucasrodriguesgui@hotmail.com", "w", "w", "M");
+		AlunoDAO.salvar(al);
+		al = AlunoDAO.buscarPorUsuario("w");
+		p = ProfessorDAO.buscarPorUsuario("q");
+		
+		Turma t = new Turma("T1", new Date());
+		TurmaDAO.salvar(t);
+		t.addAluno(al);
+		t.setProfessor(p);
+		TurmaDAO.editar(t);
 	}
 	
 	@Test

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<ui:composition template="/templates/template.xhtml">
+	<ui:define name="conteudo">
+		<f:metadata>
+			<f:viewParam name="idTurma" value="#{detalharTurmaMBean.idTurma}" />
+		</f:metadata>
+		<h:form id="form">
+			<p:growl id="growl" showDetail="true" sticky="true" autoUpdate="true" />
+			<p:panelGrid columns="2" layout="grid" id="grid">
+				<h:panelGrid columns="2" cellspacing="5" cellpadding="5">
+					<h:outputLabel for="nome" value="Nome: " />
+					<p:inplace id="nome" editor="true">
+						<p:inputText value="#{detalharTurmaMBean.nome}" required="true"
+							label="text" />
+					</p:inplace>
+
+					<h:outputLabel for="nomeProfessor" value="Professor: " />
+					<p:inplace id="nomeProfessor"
+						label="#{detalharTurmaMBean.turma.professor.nome}"
+						effectSpeed="fast" event="click">
+						<p:selectOneMenu id="professor" filter="true"
+							filterMatchMode="contains"
+							value="#{detalharTurmaMBean.professorEscolhido}">
+							<f:selectItem itemLabel="Escolha um professor" itemValue="" />
+							<f:selectItems value="#{detalharTurmaMBean.professores}"
+								var="professor" itemLabel="#{professor.nome}"
+								itemValue="#{professor.login.usuario}" />
+						</p:selectOneMenu>
+					</p:inplace>
+
+					<f:facet name="footer">
+						<p:commandButton value="Salvar alterações"
+							action="#{detalharTurmaMBean.salvarAlteracoes()}" update=":form:grid"/>
+					</f:facet>
+				</h:panelGrid>
+				<h:panelGrid columns="1" id="gridDT">
+					<p:dataTable var="aluno" tableStyle="width:auto"
+						value="#{detalharTurmaMBean.alunosMatriculados}"
+						style="margin-bottom:40px" id="dTurma" paginator="true"
+						paginatorAlwaysVisible="false" rows="6"
+						emptyMessage="Sem alunos matriculados">
+						<f:facet name="header">
+								Alunos matriculados
+							</f:facet>
+						<p:column headerText="Nome" sortBy="#{aluno.nome}">
+							<h:outputText value="#{aluno.nome}" />
+						</p:column>
+
+						<p:column headerText="Usuário" sortBy="#{aluno.login.usuario}">
+							<h:outputText value="#{aluno.login.usuario}" />
+						</p:column>
+
+						<p:column style="text-align: center">
+							<p:commandButton value="Remover aluno de turma"
+								action="#{detalharTurmaMBean.removerAlunoDeTurma(aluno)}"
+								update="dTurma :form:dAlunos" />
+						</p:column>
+
+						<f:facet name="footer">
+							<p:commandButton value="Matricular alunos"
+								onclick="PF('matricularAlunosDlg').show();" />
+						</f:facet>
+					</p:dataTable>
+				</h:panelGrid>
+			</p:panelGrid>
+
+			<p:dialog header="Escolher alunos" resizable="false"
+				widgetVar="matricularAlunosDlg" closable="false">
+				<p:dataTable id="dAlunos" tableStyle="width:auto" var="aluno"
+					value="#{detalharTurmaMBean.alunosGeral}"
+					selection="#{detalharTurmaMBean.alunosSelecionados}"
+					rowKey="#{aluno.login.usuario}" paginator="true"
+					paginatorAlwaysVisible="false" rows="5">
+					<p:column selectionMode="multiple"
+						style="width:16px;text-align:center" />
+
+					<p:column headerText="Nome" sortBy="#{aluno.nome}">
+						<h:outputText value="#{aluno.nome}" />
+					</p:column>
+
+					<p:column headerText="Usuario" sortBy="#{aluno.login.usuario}">
+						<h:outputText value="#{aluno.login.usuario}" />
+					</p:column>
+				</p:dataTable>
+
+				<f:facet name="footer">
+					<p:commandButton action="#{detalharTurmaMBean.matricularAlunos()}"
+						value="Matricular" oncomplete="PF('matricularAlunosDlg').hide();"
+						update=":form:dTurma dAlunos" ajax="true" />
+					<p:commandButton action="#{detalharTurmaMBean.cancelarAlunos()}"
+						value="Cancelar" oncomplete="PF('matricularAlunosDlg').hide();" />
+				</f:facet>
+			</p:dialog>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

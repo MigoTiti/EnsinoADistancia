@@ -1,5 +1,7 @@
 package br.com.ensino.entidade;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -66,5 +68,15 @@ public class VideoAula {
 
 	public void setTurma(Turma turma) {
 		this.turma = turma;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return ((VideoAula) obj).getId().equals(this.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
 	}
 }
